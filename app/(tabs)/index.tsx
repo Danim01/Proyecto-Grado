@@ -1,9 +1,12 @@
 import { Image, StyleSheet, Platform } from 'react-native';
 
-import { HelloWave } from '@/components/HelloWave';
-import ParallaxScrollView from '@/components/ParallaxScrollView';
-import { ThemedText } from '@/components/ThemedText';
-import { ThemedView } from '@/components/ThemedView';
+import { HelloWave } from '~/components/HelloWave';
+import ParallaxScrollView from '~/components/ParallaxScrollView';
+import { ThemedText } from '~/components/ThemedText';
+import { ThemedView } from '~/components/ThemedView';
+import { Button } from '~/components/ui/button';
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '~/components/ui/card';
+import { Text } from '~/components/ui/text';
 
 export default function HomeScreen() {
   return (
@@ -11,7 +14,7 @@ export default function HomeScreen() {
       headerBackgroundColor={{ light: '#A1CEDC', dark: '#1D3D47' }}
       headerImage={
         <Image
-          source={require('@/assets/images/partial-react-logo.png')}
+          source={require('~/assets/images/partial-react-logo.png')}
           style={styles.reactLogo}
         />
       }>
@@ -45,6 +48,21 @@ export default function HomeScreen() {
           <ThemedText type="defaultSemiBold">app</ThemedText> to{' '}
           <ThemedText type="defaultSemiBold">app-example</ThemedText>.
         </ThemedText>
+        <Button variant="destructive">
+          <Text>I'm a button</Text>
+        </Button>
+        <Card className='w-full max-w-sm bg-slate-500'>
+          <CardHeader>
+            <CardTitle>Card Title</CardTitle>
+            <CardDescription>Card Description</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Text>Card Content</Text>
+          </CardContent>
+          <CardFooter>
+            <Text>Card Footer</Text>
+          </CardFooter>
+        </Card>
       </ThemedView>
     </ParallaxScrollView>
   );
