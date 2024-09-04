@@ -1,90 +1,96 @@
-import { Link } from "expo-router";
-import { useState } from "react";
-import { Controller, SubmitErrorHandler, useForm } from "react-hook-form";
-import { Pressable, StyleSheet, View } from "react-native";
-import PolymorphicText from "~/components/PolymorphicText";
-import { Button } from "~/components/ui/button";
-import { Input } from "~/components/ui/input";
-import { Label } from "~/components/ui/label";
-
-
+import { Link } from "expo-router"
+import { useState } from "react"
+import { Controller, SubmitErrorHandler, useForm } from "react-hook-form"
+import { Pressable, StyleSheet, View } from "react-native"
+import { Button, TextInput } from "react-native-paper"
+import { ThemedText } from '@/components/ThemedText'
+import { ThemedView } from '@/components/ThemedView'
 
 export default function LoginScreen() {
-    const { register, setValue, handleSubmit, control, reset, formState: { errors } } = useForm();
-    const onSubmit = (data: any) => {
-        console.log(data);
-    };
-    
-    const onError: SubmitErrorHandler<any> = (errors, e) => {
-        return console.log(errors)
-    }
+  const {
+    register,
+    setValue,
+    handleSubmit,
+    control,
+    reset,
+    formState: { errors },
+  } = useForm()
+  const onSubmit = (data: any) => {
+    console.log(data)
+  }
 
+  const onError: SubmitErrorHandler<any> = (errors, e) => {
+    return console.log(errors)
+  }
 
-    return (
-        <>
-            <View>
-                <PolymorphicText variant="title">Iniciar Sesión</PolymorphicText>
-                <PolymorphicText variant="subtitle">Bienvenido, por favor ingrese sus datos para iniciar sesión</PolymorphicText>
-            </View>
-            <View>
-                <View>
-                    <Label nativeID="email">Correo Electrónico</Label>
-                    <Controller
-                        control={control}
-                        render={({field: { onChange, onBlur, value }}) => (
-                            <Input
-                                onBlur={onBlur}
-                                onChangeText={value => onChange(value)}
-                                value={value || ""}
-                                placeholder="kevinPapasito@gmail.com"
-                                aria-labelledby="email"
-                            />
-                        )}
-                        name="email"
-                        rules={{ required:"Este campo es requerido" }}
-                    />
-                </View>
-                <View>
-                    <Label nativeID="contraseña">Contraseña</Label>
-                    <Controller
-                        control={control}
-                        render={({field: { onChange, onBlur, value }}) => (
-                            <Input
-                                onBlur={onBlur}
-                                onChangeText={value => onChange(value)}
-                                value={value || ""}
-                                secureTextEntry
-                                placeholder="......."
-                                aria-labelledby="contraseña"
-                            />
-                        )}
-                        name="contraseña"
-                        rules={{ required:"Este campo es requerido" }}
-                    />
-                </View>
-                <View> 
-                    <Link href="/resetpassword">
-                        Recuperar contraseña
-                    </Link>
-                </View>
-                <View>
-                    <Button onPress={handleSubmit(onSubmit)}>
-                        <PolymorphicText>Iniciar Sesión</PolymorphicText>
-                    </Button>
-                </View>
-            </View>
-            <View>
-                <PolymorphicText>¿No estas registrado?
-                    <Link href="/register">
-                        Registrarse
-                    </Link>
-                </PolymorphicText>
-            </View>
-        </>
-        
-    )
+  return (
+    <ThemedView style={styles.mainContainer}>
+      <View>
+        <ThemedText type="title">Iniciar Sesión</ThemedText>
+        <ThemedText type="subtitle">
+          Bienvenido, por favor ingrese sus datos para iniciar sesión
+        </ThemedText>
+      </View>
+      <View>
+        <View>
+          <Controller
+            control={control}
+            render={({ field: { onChange, onBlur, value } }) => (
+              <TextInput
+                label="Email"
+                onBlur={onBlur}
+                onChangeText={(value: any) => onChange(value)}
+                value={value || ""}
+                placeholder="kevinPapasito@gmail.com"
+                aria-labelledby="email"
+              />
+            )}
+            name="email"
+            rules={{ required: "Este campo es requerido" }}
+          />
+        </View>
+        <View>
+          <Controller
+            control={control}
+            render={({ field: { onChange, onBlur, value } }) => (
+              <TextInput
+                label="Contraseña"
+                onBlur={onBlur}
+                onChangeText={(value: any) => onChange(value)}
+                value={value || ""}
+                secureTextEntry
+                placeholder="......."
+                aria-labelledby="contraseña"
+              />
+            )}
+            name="contraseña"
+            rules={{ required: "Este campo es requerido" }}
+          />
+        </View>
+        <View>
+          <Link href="/resetpassword">Recuperar contraseña</Link>
+        </View>
+        <View>
+          <Button onPress={handleSubmit(onSubmit)}>
+            <ThemedText>Iniciar Sesión</ThemedText>
+          </Button>
+        </View>
+      </View>
+      <View>
+        <ThemedText>
+          ¿No estas registrado?
+          <Link href="/register">Registrarse</Link>
+        </ThemedText>
+      </View>
+    </ThemedView>
+  )
 }
 
-const styleSheet = StyleSheet.create({
-    
-})
+const styles = StyleSheet.create({
+  mainContainer: {
+    gap: 8,
+    flex: 1,
+    paddingHorizontal: 24,
+    paddingTop: 40
+  },
+});

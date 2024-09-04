@@ -1,5 +1,4 @@
-import { StyleSheet, TextStyle, type TextProps } from "react-native";
-import { Text } from "./ui/text";
+import { StyleSheet, Text, TextStyle, type TextProps } from "react-native";
 
 type Variants = "normal" | "title" | "subtitle";
 
