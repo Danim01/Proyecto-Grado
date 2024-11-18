@@ -1,8 +1,9 @@
 import { ThemedText } from '@/components/ThemedText'
+import { ThemedView } from '@/components/ThemedView'
 import { Link } from "expo-router"
 import { useState } from "react"
 import { Controller, useForm } from "react-hook-form"
-import { Pressable, Text, View } from "react-native"
+import { Pressable, StyleSheet, Text, View } from "react-native"
 import { Button, TextInput } from "react-native-paper"
 
 export default function () {
@@ -20,8 +21,9 @@ export default function () {
 
   return (
     <>
-      <View>
-        <View>
+      <ThemedView style={styles.mainContainer}>
+        <ThemedText type='title'>Recuperar Contraseña</ThemedText>
+        <ThemedView>
           <Controller
             control={control}
             render={({ field: { onChange, onBlur, value } }) => (
@@ -37,13 +39,23 @@ export default function () {
             name="email"
             rules={{ required: "Este campo es requerido" }}
           />
-        </View>
-        <View>
-          <Button onPress={handleSubmit(onSubmit)}>
+        </ThemedView>
+        <ThemedView>
+          <Button onPress={handleSubmit(onSubmit)} mode="contained-tonal">
             <ThemedText>Recuperar Contraseña</ThemedText>
           </Button>
-        </View>
-      </View>
+        </ThemedView>
+      </ThemedView>
     </>
   )
 }
+
+const styles = StyleSheet.create({
+  mainContainer: {
+    gap: 45,
+    flex: 1,
+    paddingHorizontal: 24,
+    paddingTop: 60,
+  },
+});
+
