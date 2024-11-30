@@ -1,17 +1,26 @@
+import FormField from '@/components/FormField'
 import { ThemedText } from '@/components/ThemedText'
 import { ThemedView } from '@/components/ThemedView'
+import { resetPasswordSchema } from '@/schema'
+import { zodResolver } from '@hookform/resolvers/zod'
 import { Link } from "expo-router"
 import { useState } from "react"
 import { Controller, useForm } from "react-hook-form"
 import { Pressable, StyleSheet, Text, View } from "react-native"
 import { Button, TextInput } from "react-native-paper"
+import { z } from 'zod'
 
 export default function () {
   const {
     control,
     handleSubmit,
     formState: { errors },
-  } = useForm()
+  } = useForm<z.infer<typeof resetPasswordSchema>>({
+    resolver: zodResolver(resetPasswordSchema),
+    defaultValues: {
+      email: ""
+    }
+  })
   const [formData, setFormData] = useState(null)
 
   const onSubmit = (data: any) => {
@@ -26,14 +35,13 @@ export default function () {
         <ThemedView>
           <Controller
             control={control}
-            render={({ field: { onChange, onBlur, value } }) => (
-              <TextInput
+            render={({ field }) => (
+              <FormField
                 label="Correo"
-                onBlur={onBlur}
-                onChangeText={(value) => onChange(value)}
-                value={value || ""}
+                onChangeText={field.onChange}
                 placeholder="kevinPapasito@gmail.com"
-                aria-labelledby="email"
+                inputError={errors.email}
+                {...field}
               />
             )}
             name="email"

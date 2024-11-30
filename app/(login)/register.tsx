@@ -1,10 +1,14 @@
 import { Link } from "expo-router"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { Controller, SubmitErrorHandler, useForm } from "react-hook-form"
 import { Pressable, StyleSheet, Text, View } from "react-native"
-import { Button, TextInput } from "react-native-paper"
+import { Button } from "react-native-paper"
 import { ThemedText } from '@/components/ThemedText'
 import { ThemedView } from "@/components/ThemedView"
+import FormField from "@/components/FormField"
+import { registerSchema } from "@/schema"
+import { zodResolver } from "@hookform/resolvers/zod"
+import { z } from "zod"
 
 export default function RegisterScreen() {
   const {
@@ -14,7 +18,20 @@ export default function RegisterScreen() {
     control,
     reset,
     formState: { errors },
-  } = useForm()
+  } = useForm<z.infer<typeof registerSchema>>({
+    resolver: zodResolver(registerSchema),
+    defaultValues: {
+      name: "",
+      email: "",
+      password: "",
+      confirmPassword: ""
+    }
+  })
+
+  useEffect(() => {
+    console.log(errors)
+  }, [errors])
+
   const onSubmit = (data: any) => {
     console.log(data)
   }
@@ -36,70 +53,63 @@ export default function RegisterScreen() {
           <ThemedView>
             <Controller
               control={control}
-              render={({ field: { onChange, onBlur, value } }) => (
-                <TextInput
-                  label="Nombre"
-                  onBlur={onBlur}
-                  onChangeText={(value) => onChange(value)}
-                  value={value || ""}
-                  placeholder="kevinPapasito"
-                />
-              )}
               name="name"
-              rules={{ required: "Este campo es requerido" }}
+              render={({ field }) => (
+                <FormField
+                  label="Nombre"
+                  onChangeText={field.onChange}
+                  placeholder="kevinPapasito"
+                  inputError={errors.name}
+                  {...field}
+                />
+              )}
             />
           </ThemedView>
           <ThemedView>
             <Controller
               control={control}
-              render={({ field: { onChange, onBlur, value } }) => (
-                <TextInput
-                  label="Correo"
-                  onBlur={onBlur}
-                  onChangeText={(value) => onChange(value)}
-                  value={value || ""}
-                  placeholder="kevinPapasito@gmail.com"
-                  aria-labelledby="email"
-                />
-              )}
               name="email"
-              rules={{ required: "Este campo es requerido" }}
+              render={({ field }) => (
+                <FormField
+                  label="Correo"
+                  onChangeText={field.onChange}
+                  placeholder="kevinPapasito@gmail.com"
+                  inputError={errors.email}
+                  {...field}
+                />
+              )}
             />
           </ThemedView>
           <ThemedView>
             <Controller
               control={control}
-              render={({ field: { onChange, onBlur, value } }) => (
-                <TextInput
-                  label="Contraseña"
-                  onBlur={onBlur}
-                  onChangeText={(value) => onChange(value)}
-                  value={value || ""}
-                  secureTextEntry
-                  placeholder="••••••••"
-                  aria-labelledby="contraseña"
-                />
-              )}
               name="password"
-              rules={{ required: "Este campo es requerido" }}
+              render={({ field }) => (
+                <FormField
+                  label="Contraseña"
+                  onChangeText={field.onChange}
+                  secureTextEntry
+                  placeholder="••••••••"
+                  inputError={errors.password}
+                  {...field}
+                />
+              )}
             />
           </ThemedView>
           <ThemedView>
             <Controller
               control={control}
-              render={({ field: { onChange, onBlur, value } }) => (
-                <TextInput
+              name="confirmPassword"
+              render={({ field }) => (
+                <FormField
                   label="Confirmar Contraseña"
-                  onBlur={onBlur}
-                  onChangeText={(value) => onChange(value)}
-                  value={value || ""}
+                  onChangeText={field.onChange}
                   secureTextEntry
                   placeholder="••••••••"
-                  aria-labelledby="contraseña"
+                  inputError={errors.confirmPassword}
+                  {...field}
                 />
               )}
-              name="confirmPassword"
-              rules={{ required: "Este campo es requerido" }}
             />
           </ThemedView>
           <ThemedView>
