@@ -62,7 +62,7 @@ const styles = StyleSheet.create({
     marginTop: 6,
     fontSize: 14,
     fontWeight: 'bold',
-    lineHeight: 8,
+    lineHeight: 14,
     color: 'rgb(242, 184, 181)'
   }
 });

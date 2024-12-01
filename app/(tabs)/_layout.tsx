@@ -8,16 +8,22 @@ export default function TabLayout() {
   return (
     <Tabs
       initialRouteName='home'
-      screenOptions={{
+      screenOptions={({ route }) => ({
         tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
         tabBarShowLabel: false,
-      }}
+        tabBarStyle: {
+          display: route.name === 'analysis' ? 'none' : 'flex'
+        }
+      })}
     >
       <Tabs.Screen
         name="home"
       />
       <Tabs.Screen
-        name="capturer"
+        name="analysis"
+        options={{
+          headerShown: false
+        }}
       />
     </Tabs>
   );

@@ -33,7 +33,8 @@
         {
           "cameraPermission": "Permitir a $(PRODUCT_NAME) acceder a tu cámara"
         }
-      ]
+      ],
+      "expo-font"
     ],
     "experiments": {
       "typedRoutes": true
