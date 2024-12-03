@@ -1,7 +1,23 @@
-import { Slot, Stack } from "expo-router"
-import { View } from "react-native"
+import { ThemedText } from "@/components/ThemedText"
+import { ThemedView } from "@/components/ThemedView"
+import { useSession } from "@/context/authContext"
+import { Redirect, Stack } from "expo-router"
 
 export default function LoginLayout() {
+  const { session, isLoading } = useSession()
+
+  if (isLoading) {
+    return (
+      <ThemedView>
+        <ThemedText type='title'>Cargando...</ThemedText>
+      </ThemedView> 
+    )
+  }
+
+  if (session?.refresh && session.access) {
+    return <Redirect href="/home" />
+  }
+
   return (
     <Stack screenOptions={{
       headerTitle: "",

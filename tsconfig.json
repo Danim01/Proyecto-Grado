@@ -5,7 +5,8 @@
     "paths": {
       "@/*": [
         "./*"
-      ]
+      ],
+      "@hooks/*": ["./hooks/*"]
     },
     "suppressImplicitAnyIndexErrors": false
   },

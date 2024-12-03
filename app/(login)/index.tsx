@@ -1,22 +1,19 @@
 import { Link } from "expo-router"
-import { useEffect, useState } from "react"
-import { Controller, SubmitErrorHandler, useForm } from "react-hook-form"
-import { Pressable, StyleSheet } from "react-native"
-import { Button, TextInput } from "react-native-paper"
+import { Controller, useForm } from "react-hook-form"
+import { StyleSheet } from "react-native"
+import { Button } from "react-native-paper"
 import { ThemedText } from '@/components/ThemedText'
 import { ThemedView } from '@/components/ThemedView'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { loginSchema } from "@/schema"
 import FormField from "@/components/FormField"
 import { z } from "zod"
+import { useSession } from "@/context/authContext"
 
 export default function LoginScreen() {
   const {
-    register,
-    setValue,
     handleSubmit,
     control,
-    reset,
     formState: { errors },
   } = useForm<z.infer<typeof loginSchema>>({
     resolver: zodResolver(loginSchema),
@@ -26,16 +23,10 @@ export default function LoginScreen() {
     }
   })
 
-  useEffect(() => {
-    console.log(errors)
-  }, [errors])
+  const { signIn } = useSession()
 
   const onSubmit = (data: any) => {
-    console.log(data) 
-  }
-
-  const onError: SubmitErrorHandler<any> = (errors, e) => {
-    return console.log(errors)
+     signIn(data)
   }
 
   return (
@@ -90,9 +81,6 @@ export default function LoginScreen() {
         </ThemedView>
       </ThemedView>
       <ThemedView>
-        <Link href="/(tabs)/home">
-          <ThemedText type="default">Inicio</ThemedText>
-        </Link>
         <ThemedText style={styles.textBottom}>
           ¿No estas registrado?
           <Link href="/register"> Registrarse</Link>
