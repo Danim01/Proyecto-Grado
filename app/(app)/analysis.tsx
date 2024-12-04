@@ -1,21 +1,16 @@
-import { CameraView, CameraType, useCameraPermissions } from 'expo-camera';
-import { useEffect, useRef, useState } from 'react';
+import { CameraPictureOptions, CameraView, useCameraPermissions } from 'expo-camera';
+import { useRef } from 'react';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { Button } from 'react-native-paper'
 import Feather from '@expo/vector-icons/Feather';
-import { ThemedText } from "@/components/ThemedText";
-import { ThemedView } from "@/components/ThemedView";
+import uploadImage from '@/utils/uploadImage';
 
 export default function AnalysisScreen() {
-  const camera = useRef(null);
-  const [facing, setFacing] = useState<CameraType>('back');
+  const camera = useRef<CameraView>(null);
   const [permission, requestPermission] = useCameraPermissions();
-  useEffect(() => {
-    console.log("AQUÍ", camera.current)
-  }, [camera.current])
 
   if (!permission) {
-    // Camera permissions are still loading.
+    // Cuando aun no han cargado los permisos
     return (
       <View>
         <Text>holi</Text>
@@ -24,32 +19,43 @@ export default function AnalysisScreen() {
   }
 
   if (!permission.granted) {
-    // Camera permissions are not granted yet.
+    // Cargan los permisos pero aun no se han otorgan permisos
     return (
       <View style={styles.container}>
-        <Text style={styles.message}>We need your permission to show the camera</Text>
+        <Text style={styles.message}>Necesitamos acceso a tu cámara</Text>
         <Button onPress={requestPermission}>
-          grant permission
+          Otorgar permisos
         </Button>
       </View>
     );
   }
   
 
-  // async function takePhoto () {
-  //   const photo = await takePicture
-  // }
+  async function takePhoto () {
+    if (!camera.current) return
 
-  function toggleCameraFacing() {
-    setFacing(current => (current === 'back' ? 'front' : 'back'));
+    const cameraOptions: CameraPictureOptions = {
+      imageType: "jpg",
+      quality: 0.1,
+      scale: 0.8
+    } 
+    try {
+      const photo = await camera.current.takePictureAsync(cameraOptions)
+      if (!photo) return
+      const imageURL = await uploadImage({ uri: photo.uri })
+      console.log(imageURL)
+    } catch (error) {
+      console.error(error)
+    }
   }
 
   return (
+    // Cargan permisos y se renderiza la cámara
     <View style={styles.container}>
-      <CameraView style={styles.camera} facing={facing} ref={camera}>
+      <CameraView style={styles.camera} ref={camera}>
         <View style={styles.buttonContainer}>
-          <TouchableOpacity style={styles.button}>
-            <Feather name="search" size={24} color="black" />
+          <TouchableOpacity style={styles.button} onPress={takePhoto}>
+            <Feather name="search" size={36} color="black" />
           </TouchableOpacity>
           <Button>
             <Feather name="search" size={24} color="white" />
@@ -76,6 +82,7 @@ const styles = StyleSheet.create({
   buttonContainer: {
     position: 'absolute',
     bottom: 0,
+    height: 56,
     flexDirection: 'row',
     backgroundColor: 'rgba(0, 0, 0, 0.3)',
     width: '100%'
@@ -84,15 +91,15 @@ const styles = StyleSheet.create({
     position: 'absolute',
     left: '50%',
     top: 0,
-    transform: [
-      { translateX: '-50%' },
-      { translateY: '-50%' }
-    ],
+    width: 64,
+    height: 64,
+    marginLeft: -32,
+    marginTop: -32,
     backgroundColor: 'white',
-    borderRadius: '9999px',
-    padding: 8,
-    aspectRatio: '1/1',
+    borderRadius: 9999,
     overflow: 'visible',
+    justifyContent: 'center',
+    alignItems: 'center'
   },
   text: {
     fontSize: 24,

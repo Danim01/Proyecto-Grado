@@ -11,19 +11,10 @@ export default function TabLayout() {
       screenOptions={({ route }) => ({
         tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
         tabBarShowLabel: false,
-        tabBarStyle: {
-          display: route.name === 'analysis' ? 'none' : 'flex'
-        }
       })}
     >
       <Tabs.Screen
         name="home"
-      />
-      <Tabs.Screen
-        name="analysis"
-        options={{
-          headerShown: false
-        }}
       />
     </Tabs>
   );
