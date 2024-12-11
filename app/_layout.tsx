@@ -28,16 +28,16 @@ export default function RootLayout() {
   }
 
   return (
-    <SessionProvider>
-      <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-        <PaperProvider>
+    <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
+      <PaperProvider>
+        <SessionProvider>
           <Stack>
             <Stack.Screen name="(app)" options={{ headerShown: false }} />
             <Stack.Screen name="(login)" options={{ headerShown: false }} />
             <Stack.Screen name="+not-found" />
           </Stack>
-        </PaperProvider>
-      </ThemeProvider>
-    </SessionProvider>
+        </SessionProvider> 
+      </PaperProvider>
+    </ThemeProvider>
   );
 }

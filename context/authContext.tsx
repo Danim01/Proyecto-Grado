@@ -1,6 +1,7 @@
-import { useContext, createContext, type PropsWithChildren, useCallback, useMemo } from 'react';
+import { useContext, createContext, type PropsWithChildren, useCallback, useMemo, useState } from 'react';
 import { useStorageState } from '@hooks/useStorageState';
 import singInAction from '@/utils/signIn';
+import { Button, Dialog, Portal, Text } from 'react-native-paper';
 
 export interface Session {
   access: string | null
@@ -40,14 +41,14 @@ export function useSession() {
 
 export function SessionProvider({ children }: PropsWithChildren) {
   const [[isLoading, session], setSession] = useStorageState('session');
+  const [error, setError] = useState('');
 
   const signIn = useCallback(async (credentials: Credentials) => {
     try {
       const newSession = await singInAction(credentials)
-      console.log(newSession)
       setSession(newSession);
-    } catch (error) {
-      console.error(error)
+    } catch (error: any) {
+      setError(error.message)
       setSession(null)
     }
     // manejar el error
@@ -56,17 +57,36 @@ export function SessionProvider({ children }: PropsWithChildren) {
   const signOut = useCallback(() => {
     setSession(null)
   }, [setSession])
+
+  const hideDialog = () => {
+    setError('')
+  }
   
   const contextValue = useMemo(() => ({
     session,
     isLoading,
     signIn,
-    signOut
-  }), [session, isLoading, signIn, signOut])
+    signOut,
+    error
+  }), [session, isLoading, signIn, signOut, error])
 
   return (
     <AuthContext.Provider
-      value={contextValue}>
+      value={contextValue}
+    >
+      <Portal>
+        <Dialog visible={error.length > 0}>
+          <Dialog.Title>Error</Dialog.Title>
+          <Dialog.Content>
+            <Text>
+              {error}
+            </Text>
+          </Dialog.Content>
+          <Dialog.Actions>
+            <Button onPress={hideDialog}>Cerrar</Button>
+          </Dialog.Actions>
+        </Dialog>
+      </Portal>
       {children}
     </AuthContext.Provider>
   );
