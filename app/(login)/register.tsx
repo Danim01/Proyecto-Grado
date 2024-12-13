@@ -1,7 +1,7 @@
-import { Link } from "expo-router"
-import { useEffect, useState } from "react"
+import { Link, useRouter } from "expo-router"
+import { useEffect } from "react"
 import { Controller, SubmitErrorHandler, useForm } from "react-hook-form"
-import { Pressable, StyleSheet, Text, View } from "react-native"
+import { Pressable, StyleSheet } from "react-native"
 import { Button } from "react-native-paper"
 import { ThemedText } from '@/components/ThemedText'
 import { ThemedView } from "@/components/ThemedView"
@@ -9,11 +9,10 @@ import FormField from "@/components/FormField"
 import { registerSchema } from "@/schema"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { z } from "zod"
+import { useSession } from "@/context/authContext"
 
 export default function RegisterScreen() {
   const {
-    register,
-    setValue,
     handleSubmit,
     control,
     reset,
@@ -28,104 +27,110 @@ export default function RegisterScreen() {
     }
   })
 
-  useEffect(() => {
-    console.log(errors)
-  }, [errors])
+  const { register, error, isRegistering } = useSession()
+  const router = useRouter()
 
-  const onSubmit = (data: any) => {
+
+  useEffect(() => {
+    
+  }, [])
+
+  const onSubmit = async (data: any) => {
+    try {
+      const newUser = await register(data)
+      if (newUser) {
+        router.navigate("/")
+      }
+    } catch (error) {
+      console.error(error)
+    }
     console.log(data)
   }
 
-  const onError: SubmitErrorHandler<any> = (errors, e) => {
-    return console.log(errors)
-  }
-
   return (
-    <>
-      <ThemedView style={styles.mainContainer}>
-        <ThemedView style={styles.title}>
-          <ThemedText type="title">Registrarse</ThemedText>
-          <ThemedText type="default">
-            Ingresa tus datos para completar tu registro
-          </ThemedText>
-        </ThemedView>
-        <ThemedView style={styles.form}>
-          <ThemedView>
-            <Controller
-              control={control}
-              name="name"
-              render={({ field }) => (
-                <FormField
-                  label="Nombre"
-                  onChangeText={field.onChange}
-                  placeholder="kevinPapasito"
-                  inputError={errors.name}
-                  {...field}
-                />
-              )}
-            />
-          </ThemedView>
-          <ThemedView>
-            <Controller
-              control={control}
-              name="email"
-              render={({ field }) => (
-                <FormField
-                  label="Correo"
-                  onChangeText={field.onChange}
-                  placeholder="kevinPapasito@gmail.com"
-                  inputError={errors.email}
-                  {...field}
-                />
-              )}
-            />
-          </ThemedView>
-          <ThemedView>
-            <Controller
-              control={control}
-              name="password"
-              render={({ field }) => (
-                <FormField
-                  label="Contraseña"
-                  onChangeText={field.onChange}
-                  secureTextEntry
-                  placeholder="••••••••"
-                  inputError={errors.password}
-                  {...field}
-                />
-              )}
-            />
-          </ThemedView>
-          <ThemedView>
-            <Controller
-              control={control}
-              name="confirmPassword"
-              render={({ field }) => (
-                <FormField
-                  label="Confirmar Contraseña"
-                  onChangeText={field.onChange}
-                  secureTextEntry
-                  placeholder="••••••••"
-                  inputError={errors.confirmPassword}
-                  {...field}
-                />
-              )}
-            />
-          </ThemedView>
-          <ThemedView>
-            <Button onPress={handleSubmit(onSubmit)} mode="contained-tonal">
-              <ThemedText>Registrar</ThemedText>
-            </Button>
-          </ThemedView>
+    <ThemedView style={styles.mainContainer}>
+      <ThemedView style={styles.title}>
+        <ThemedText type="title">Registrarse</ThemedText>
+        <ThemedText type="default">
+          Ingresa tus datos para completar tu registro
+        </ThemedText>
+      </ThemedView>
+      <ThemedView style={styles.form}>
+        <ThemedView>
+          <Controller
+            control={control}
+            name="name"
+            render={({ field }) => (
+              <FormField
+                label="Nombre"
+                onChangeText={field.onChange}
+                placeholder="kevinPapasito"
+                inputError={errors.name}
+                {...field}
+              />
+            )}
+          />
         </ThemedView>
         <ThemedView>
-          <ThemedText style={styles.textBottom}>
-            ¿Ya tienes una cuenta?
-            <Link href="/"> Iniciar Sesión</Link>
-          </ThemedText>
+          <Controller
+            control={control}
+            name="email"
+            render={({ field }) => (
+              <FormField
+                label="Correo"
+                onChangeText={field.onChange}
+                placeholder="kevinPapasito@gmail.com"
+                inputError={errors.email}
+                {...field}
+              />
+            )}
+          />
+        </ThemedView>
+        <ThemedView>
+          <Controller
+            control={control}
+            name="password"
+            render={({ field }) => (
+              <FormField
+                label="Contraseña"
+                onChangeText={field.onChange}
+                secureTextEntry
+                placeholder="••••••••"
+                inputError={errors.password}
+                {...field}
+              />
+            )}
+          />
+        </ThemedView>
+        <ThemedView>
+          <Controller
+            control={control}
+            name="confirmPassword"
+            render={({ field }) => (
+              <FormField
+                label="Confirmar Contraseña"
+                onChangeText={field.onChange}
+                secureTextEntry
+                placeholder="••••••••"
+                inputError={errors.confirmPassword}
+                {...field}
+              />
+            )}
+          />
+        </ThemedView>
+        <ThemedView>
+          <Button onPress={handleSubmit(onSubmit)} mode="contained-tonal">
+            <ThemedText>Registrar</ThemedText>
+          </Button>
         </ThemedView>
       </ThemedView>
-    </>
+      <ThemedView>
+        <ThemedText style={styles.textBottom}>
+          ¿Ya tienes una cuenta?
+          <Link href="/"> Iniciar Sesión</Link>
+        </ThemedText>
+      </ThemedView>
+    </ThemedView>
   )
 }
 

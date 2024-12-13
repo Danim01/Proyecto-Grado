@@ -14,6 +14,9 @@ function useAsyncState<T>(
   ) as UseStateHook<T>;
 }
 
+// Archivo que maneja la persistencia de la sesión
+// Esto se modifico del la documentación de Expo: https://docs.expo.dev/router/reference/authentication/#example-authentication-context
+
 export async function setStorageItemAsync(key: string, value: Session | null) {
   if (Platform.OS === 'web') {
     try {

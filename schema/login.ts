@@ -1,5 +1,6 @@
 import { z } from "zod"
 
+// Validación de la página "iniciar sesión"
 const loginSchema = z.object({
   email: z
     .string()

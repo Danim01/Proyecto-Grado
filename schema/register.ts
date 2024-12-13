@@ -1,5 +1,6 @@
 import { z } from "zod";
 
+// Validación de la página "registro"
 const registerSchema = z.object({
   name: z
     .string()
