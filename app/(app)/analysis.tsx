@@ -1,13 +1,16 @@
 import { CameraPictureOptions, CameraView, useCameraPermissions } from 'expo-camera';
-import { useRef } from 'react';
+import { useRef, useState } from 'react';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { Button } from 'react-native-paper'
 import Feather from '@expo/vector-icons/Feather';
 import uploadImage from '@/utils/uploadImage';
+import analyzeImage from '@/utils/analyzeImage';
 
 export default function AnalysisScreen() {
-  const camera = useRef<CameraView>(null);
-  const [permission, requestPermission] = useCameraPermissions();
+  const camera = useRef<CameraView>(null)
+  const [permission, requestPermission] = useCameraPermissions()
+  const [loadingMessage, setLoadingMessage] = useState("")
+  const [loading, setLoading] = useState(false)
 
   if (!permission) {
     // Cuando aun no han cargado los permisos
@@ -41,11 +44,23 @@ export default function AnalysisScreen() {
     } 
     try {
       const photo = await camera.current.takePictureAsync(cameraOptions)
+      // Poner un mensaje de error cuando la foto sale mal
       if (!photo) return
+      setLoading(true)
+      setLoadingMessage("Subiendo imagen...")
+
       const imageURL = await uploadImage({ uri: photo.uri })
-      console.log(imageURL)
+      if (!imageURL) {
+        setLoading(false)
+        return
+      }
+
+      const dataAnalysis = analyzeImage({ imageURL })
+      console.log(dataAnalysis)
     } catch (error) {
       console.error(error)
+    } finally {
+      setLoading(false)
     }
   }
 

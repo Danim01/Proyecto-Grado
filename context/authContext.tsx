@@ -20,6 +20,12 @@ export interface CredentialsRegister {
   password: string
 }
 
+export interface User {
+  email: string
+  id: string
+  name: string
+}
+
 interface AuthContextType {
   signIn: ({
     email, password

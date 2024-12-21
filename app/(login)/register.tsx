@@ -1,6 +1,6 @@
 import { Link, useRouter } from "expo-router"
-import { useEffect } from "react"
-import { Controller, SubmitErrorHandler, useForm } from "react-hook-form"
+import { useEffect, useState } from "react"
+import { Controller, useForm } from "react-hook-form"
 import { Pressable, StyleSheet } from "react-native"
 import { Button } from "react-native-paper"
 import { ThemedText } from '@/components/ThemedText'
@@ -9,7 +9,7 @@ import FormField from "@/components/FormField"
 import { registerSchema } from "@/schema"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { z } from "zod"
-import { useSession } from "@/context/authContext"
+import { User, useSession } from "@/context/authContext"
 
 export default function RegisterScreen() {
   const {
@@ -27,8 +27,9 @@ export default function RegisterScreen() {
     }
   })
 
-  const { register, error, isRegistering } = useSession()
+  const { register } = useSession()
   const router = useRouter()
+  const [userRegister, setUserRegister] = useState<User | null>(null)
 
 
   useEffect(() => {
@@ -39,12 +40,16 @@ export default function RegisterScreen() {
     try {
       const newUser = await register(data)
       if (newUser) {
-        router.navigate("/")
+        setUserRegister(newUser)
+        setTimeout(() => (
+          router.navigate("/")
+        ), 5000)
+        reset()
       }
     } catch (error) {
       console.error(error)
     }
-    console.log(data)
+    console.log("nuevo:", userRegister)
   }
 
   return (
@@ -54,6 +59,7 @@ export default function RegisterScreen() {
         <ThemedText type="default">
           Ingresa tus datos para completar tu registro
         </ThemedText>
+        {userRegister && <ThemedText type="defaultSemiBold" style={{color: "#008000"}}>{userRegister.name}, su cuenta fue creada exitosamente, sera redirigido al inicio de sesión</ThemedText>}
       </ThemedView>
       <ThemedView style={styles.form}>
         <ThemedView>

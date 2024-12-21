@@ -3,14 +3,13 @@ import { ThemedText } from '@/components/ThemedText'
 import { ThemedView } from '@/components/ThemedView'
 import { resetPasswordSchema } from '@/schema'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { Link } from "expo-router"
 import { useState } from "react"
 import { Controller, useForm } from "react-hook-form"
-import { Pressable, StyleSheet, Text, View } from "react-native"
-import { Button, TextInput } from "react-native-paper"
+import { Pressable, StyleSheet } from "react-native"
+import { Button } from "react-native-paper"
 import { z } from 'zod'
 
-export default function () {
+export default function ResetPassword () {
   const {
     control,
     handleSubmit,
@@ -29,32 +28,30 @@ export default function () {
   }
 
   return (
-    <>
-      <ThemedView style={styles.mainContainer}>
-        <ThemedText type='title'>Recuperar Contraseña</ThemedText>
-        <ThemedView>
-          <Controller
-            control={control}
-            render={({ field }) => (
-              <FormField
-                label="Correo"
-                onChangeText={field.onChange}
-                placeholder="kevinPapasito@gmail.com"
-                inputError={errors.email}
-                {...field}
-              />
-            )}
-            name="email"
-            rules={{ required: "Este campo es requerido" }}
-          />
-        </ThemedView>
-        <ThemedView>
-          <Button onPress={handleSubmit(onSubmit)} mode="contained-tonal">
-            <ThemedText>Recuperar Contraseña</ThemedText>
-          </Button>
-        </ThemedView>
+    <ThemedView style={styles.mainContainer}>
+      <ThemedText type='title'>Recuperar Contraseña</ThemedText>
+      <ThemedView>
+        <Controller
+          control={control}
+          render={({ field }) => (
+            <FormField
+              label="Correo"
+              onChangeText={field.onChange}
+              placeholder="kevinPapasito@gmail.com"
+              inputError={errors.email}
+              {...field}
+            />
+          )}
+          name="email"
+          rules={{ required: "Este campo es requerido" }}
+        />
       </ThemedView>
-    </>
+      <ThemedView>
+        <Button onPress={handleSubmit(onSubmit)} mode="contained-tonal">
+          <ThemedText>Recuperar Contraseña</ThemedText>
+        </Button>
+      </ThemedView>
+    </ThemedView>
   )
 }
 

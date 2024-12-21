@@ -46,10 +46,8 @@ export async function setStorageItemAsync(key: string, value: Session | null) {
 }
 
 export function useStorageState(key: string): UseStateHook<Session> {
-  // Public
   const [state, setState] = useAsyncState<Session>();
 
-  // Get
   useEffect(() => {
     const getTokens = async () => {
       try {
@@ -92,7 +90,6 @@ export function useStorageState(key: string): UseStateHook<Session> {
     console.log(state)
   }, [state])
 
-  // Set
   const setValue = useCallback(
     (value: Session | null) => {
       setState(value);
