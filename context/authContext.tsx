@@ -3,28 +3,9 @@ import { useStorageState } from '@hooks/useStorageState';
 import singInAction from '@/utils/signIn';
 import registerAction from '@/utils/register';
 import { Button, Dialog, Portal, Text } from 'react-native-paper';
-
-export interface Session {
-  access: string | null
-  refresh: string | null
-}
-
-export interface Credentials {
-  email: string
-  password: string
-}
-
-export interface CredentialsRegister {
-  name: string
-  email: string
-  password: string
-}
-
-export interface User {
-  email: string
-  id: string
-  name: string
-}
+import { Session, User } from '@/types/session';
+import { Credentials, CredentialsRegister } from '@/types/credentials';
+import { getTokens } from '@/utils/manageTokens';
 
 interface AuthContextType {
   signIn: ({
@@ -58,17 +39,18 @@ export function useSession() {
       throw new Error('useSession must be wrapped in a <SessionProvider />');
     }
   }
-
   return value;
 }
 
 export function SessionProvider({ children }: PropsWithChildren) {
-  const [[isLoading, session], setSession] = useStorageState('session');
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [session, setSession] = useState<Session | null>(getTokens());
   const [error, setError] = useState('');
   const [isRegistering, setIsRegistering] = useState(false);
 
   const register = useCallback(async (credentialRegister: CredentialsRegister) => {
     setIsRegistering(true)
+    setIsLoading(true)
     try {
       const register = await registerAction(credentialRegister)
       return register
@@ -76,16 +58,21 @@ export function SessionProvider({ children }: PropsWithChildren) {
       setError(error.message)
     } finally {
       setIsRegistering(false)
+      setIsLoading(false)
     }
   }, [])
-
+  
   const signIn = useCallback(async (credentials: Credentials) => {
+    setIsLoading(true)
     try {
       const newSession = await singInAction(credentials)
       setSession(newSession);
     } catch (error: any) {
       setError(error.message)
       setSession(null)
+    } finally {
+      setIsLoading(false)
+
     }
   }, [setSession])
 
