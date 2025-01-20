@@ -68,6 +68,7 @@ export function SessionProvider({ children }: PropsWithChildren) {
       const newSession = await singInAction(credentials)
       setSession(newSession);
     } catch (error: any) {
+      console.log(error.message.replace(",", ""))
       setError(error.message)
       setSession(null)
     } finally {

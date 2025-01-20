@@ -1,6 +1,8 @@
-import { Session } from "@/types/session";
+import { JWTPayload } from "@/types/common"
+import { jwtDecode } from "jwt-decode"
+import { Session } from "@/types/session"
 import * as SecureStore from "expo-secure-store"
-import { tokens } from "react-native-paper/lib/typescript/styles/themes/v3/tokens";
+import { diffMilliseconds } from "@formkit/tempo"
 
 async function uploadTokens(tokens: Session) {
   await SecureStore.setItemAsync("tokens", JSON.stringify(tokens))
@@ -22,8 +24,23 @@ async function deleteTokens() {
   }
 }
 
+function tokenExpired(token: string): boolean {
+  const decodedToken = jwtDecode<JWTPayload>(token)
+
+  if (!decodedToken?.exp) return false
+
+  const expInMilliseconds = decodedToken.exp * 1000
+
+  const expDate = new Date(expInMilliseconds)
+  const currentDate = new Date()
+  const difference = diffMilliseconds(expDate, currentDate)
+
+  return difference < 0
+}
+
 export {
   uploadTokens,
   getTokens,
-  deleteTokens
+  deleteTokens,
+  tokenExpired
 }

@@ -17,6 +17,7 @@
   "dependencies": {
     "@azure/storage-blob": "^12.26.0",
     "@expo/vector-icons": "^14.0.2",
+    "@formkit/tempo": "^0.1.2",
     "@hookform/resolvers": "^3.9.1",
     "@react-navigation/native": "^7.0.0",
     "axios": "^1.7.8",
@@ -31,6 +32,7 @@
     "expo-status-bar": "~2.0.0",
     "expo-system-ui": "~4.0.5",
     "expo-web-browser": "~14.0.1",
+    "jwt-decode": "^4.0.0",
     "react": "18.3.1",
     "react-art": "^18.3.1",
     "react-dom": "18.3.1",

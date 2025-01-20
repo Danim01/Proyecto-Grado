@@ -1,6 +1,6 @@
 export interface Session {
-  access: string | null
-  refresh: string | null
+  access: string
+  refresh: string
 }
 
 export interface User {
