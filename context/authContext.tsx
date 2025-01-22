@@ -5,7 +5,7 @@ import registerAction from '@/utils/register';
 import { Button, Dialog, Portal, Text } from 'react-native-paper';
 import { Session, User } from '@/types/session';
 import { Credentials, CredentialsRegister } from '@/types/credentials';
-import { getTokens } from '@/utils/manageTokens';
+import { deleteTokens, getTokens } from '@/utils/manageTokens';
 
 interface AuthContextType {
   signIn: ({
@@ -18,7 +18,8 @@ interface AuthContextType {
     name, email, password
   }: CredentialsRegister) => Promise<any>;
   isRegistering: boolean;
-  error: string
+  error: string,
+  setSession: React.Dispatch<React.SetStateAction<Session | null>>
 }
 
 const AuthContext = createContext<AuthContextType>({
@@ -28,7 +29,8 @@ const AuthContext = createContext<AuthContextType>({
   session: null,
   isLoading: false,
   isRegistering: false,
-  error: ""
+  error: "",
+  setSession: () => null
 });
 
 // Hook que da acceso al contexto de autenticación
@@ -79,6 +81,7 @@ export function SessionProvider({ children }: PropsWithChildren) {
 
   const signOut = useCallback(() => {
     setSession(null)
+    deleteTokens()
   }, [setSession])
 
   const hideDialog = () => {
@@ -92,8 +95,9 @@ export function SessionProvider({ children }: PropsWithChildren) {
     signOut,
     error,
     register,
-    isRegistering
-  }), [session, isLoading, signIn, signOut, error, register, isRegistering])
+    isRegistering,
+    setSession
+  }), [session, isLoading, signIn, signOut, error, register, isRegistering, setSession])
 
   return (
     <AuthContext.Provider

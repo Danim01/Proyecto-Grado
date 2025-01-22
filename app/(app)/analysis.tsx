@@ -5,12 +5,14 @@ import { Button } from 'react-native-paper'
 import Feather from '@expo/vector-icons/Feather';
 import uploadImage from '@/utils/uploadImage';
 import analyzeImage from '@/utils/analyzeImage';
+import useAxios from '@/hooks/useAxios';
 
 export default function AnalysisScreen() {
   const camera = useRef<CameraView>(null)
   const [permission, requestPermission] = useCameraPermissions()
   const [loadingMessage, setLoadingMessage] = useState("")
   const [loading, setLoading] = useState(false)
+  const axiosClient = useAxios()
 
   if (!permission) {
     // Cuando aun no han cargado los permisos
@@ -55,7 +57,7 @@ export default function AnalysisScreen() {
         return
       }
 
-      const dataAnalysis = analyzeImage({ imageURL })
+      const dataAnalysis = analyzeImage({ axiosClient, imageURL })
       console.log(dataAnalysis)
     } catch (error) {
       console.error(error)

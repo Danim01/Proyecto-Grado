@@ -1,12 +1,12 @@
-import { AxiosError } from "axios"
+import { AxiosError, AxiosInstance } from "axios"
 import { extractErrors } from "./extractErrors"
-import axiosClient from "./axios"
 
 interface Image {
+  axiosClient: AxiosInstance,
   imageURL: string
 }
 
-async function analyzeImage ({ imageURL }: Image) {
+async function analyzeImage ({ axiosClient, imageURL }: Image) {
   try {
     const response = await axiosClient.post('busquedas/analyze-image/', {
       img_url: imageURL

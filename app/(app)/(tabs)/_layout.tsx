@@ -1,9 +1,12 @@
 import { Colors } from '@/constants/Colors';
+import { useSession } from '@/context/authContext';
 import { useColorScheme } from '@/hooks/useColorScheme';
 import { Tabs } from 'expo-router';
+import { Button } from 'react-native-paper';
 
 export default function TabLayout() {
   const colorScheme = useColorScheme();
+  const { signOut } = useSession()
 
   return (
     <Tabs
@@ -15,6 +18,11 @@ export default function TabLayout() {
     >
       <Tabs.Screen
         name="home"
+        options={{
+          header: () => (
+            <Button onPress={signOut}>cerrar sesión</Button>
+          )
+        }}
       />
     </Tabs>
   );

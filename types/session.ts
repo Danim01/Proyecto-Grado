@@ -8,3 +8,9 @@ export interface User {
   id: string
   name: string
 }
+
+export interface CredentialsRegister {
+  name: string
+  email: string
+  password: string
+}
