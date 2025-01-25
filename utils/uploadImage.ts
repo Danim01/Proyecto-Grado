@@ -1,18 +1,16 @@
 import { BlobServiceClient } from '@azure/storage-blob'
 import uuid from 'react-native-uuid'
-import getSasURL from './getSasURL'
 
 interface Params {
   uri: string
+  tokenSas: string | null
 }
 
 // Hace referencia a la carpeta que esta subida en azure para guardar la imagen
 const containerName = "."
 
-async function uploadImage({ uri }: Params) {
+async function uploadImage({ uri, tokenSas }: Params) {
   try {
-    const tokenSas = await getSasURL()
-
     if (!tokenSas) return null
 
     // Obtiene la imagen que esta guardada en la cache del dispositivo

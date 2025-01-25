@@ -8,6 +8,7 @@ import analyzeImage from '@/utils/analyzeImage';
 import useAxios from '@/hooks/useAxios';
 import { useLookup } from '@/context/lookupContext';
 import { useRouter } from 'expo-router';
+import getSasURL from '@/utils/getSasURL';
 
 export default function AnalysisScreen() {
   const camera = useRef<CameraView>(null)
@@ -55,7 +56,8 @@ export default function AnalysisScreen() {
       setLoading(true)
       setLoadingMessage("Subiendo imagen...")
 
-      const imageURL = await uploadImage({ uri: photo.uri })
+      const tokenSas = await getSasURL(axiosClient)
+      const imageURL = await uploadImage({ tokenSas, uri: photo.uri })
       if (!imageURL) {
         setLoading(false)
         return

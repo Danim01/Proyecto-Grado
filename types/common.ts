@@ -12,3 +12,4 @@ export interface PaginationResponse<T> {
   previous: string | null;
   results:  T[];
 }
+

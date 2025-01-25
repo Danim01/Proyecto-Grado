@@ -1,11 +1,11 @@
-import { AxiosError } from "axios";
-import axiosClient from "./axios";
+import axios, { AxiosError } from "axios";
 import { extractErrors } from "./extractErrors";
 import { CredentialsRegister } from "@/types/credentials";
+import { baseURL } from "@/constants/api";
 
 async function register ({ name, email, password }: CredentialsRegister) {
   try {
-    const response = await axiosClient.post('usuario/registro/', {
+    const response = await axios.post(`${baseURL}usuario/registro/`, {
       name, email, password
     })
 

@@ -1,12 +1,12 @@
 import { Credentials } from "@/types/credentials";
 import { Session } from "@/types/session";
-import axiosClient from "./axios";
 import { extractErrors } from "./extractErrors";
-import { AxiosError } from "axios";
+import axios, { AxiosError } from "axios";
+import { baseURL } from "@/constants/api";
 
 async function signIn({ email, password }: Credentials): Promise<Session> {
   try {
-    const response = await axiosClient.post<Session>('usuario/token/obtener/', {
+    const response = await axios.post<Session>(`${baseURL}usuario/token/obtener/`, {
       email, password
     })
     return response.data

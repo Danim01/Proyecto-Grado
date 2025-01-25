@@ -1,9 +1,10 @@
 import { useSession } from "@/context/authContext";
 import { tokenExpired, uploadTokens } from "@/utils/manageTokens";
 import axios from "axios";
+import { baseURL } from "@/constants/api";
 
 // ipconfig sirve para saber cual es la ip de mi computador
-const baseURL = "http://localhost:8000/api/"
+
 
 function useAxios() {
   const { session, setSession } = useSession()
