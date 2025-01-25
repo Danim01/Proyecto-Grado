@@ -3,7 +3,7 @@ import { tokenExpired, uploadTokens } from "@/utils/manageTokens";
 import axios from "axios";
 
 // ipconfig sirve para saber cual es la ip de mi computador
-const baseURL = "http://192.168.1.43:8000/api/"
+const baseURL = "http://localhost:8000/api/"
 
 function useAxios() {
   const { session, setSession } = useSession()
@@ -26,7 +26,7 @@ function useAxios() {
       if (!didTokenExpired) return req
 
       const axiosResponse = await axios.post(
-        `${baseURL}usuario/login/refresh/`,
+        `${baseURL}usuario/token/renovar/`,
         {
           refresh: session.refresh
         }

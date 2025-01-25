@@ -6,6 +6,8 @@ import Feather from '@expo/vector-icons/Feather';
 import uploadImage from '@/utils/uploadImage';
 import analyzeImage from '@/utils/analyzeImage';
 import useAxios from '@/hooks/useAxios';
+import { useLookup } from '@/context/lookupContext';
+import { useRouter } from 'expo-router';
 
 export default function AnalysisScreen() {
   const camera = useRef<CameraView>(null)
@@ -13,6 +15,8 @@ export default function AnalysisScreen() {
   const [loadingMessage, setLoadingMessage] = useState("")
   const [loading, setLoading] = useState(false)
   const axiosClient = useAxios()
+  const { changeLastLookup } = useLookup()
+  const router = useRouter()
 
   if (!permission) {
     // Cuando aun no han cargado los permisos
@@ -57,8 +61,10 @@ export default function AnalysisScreen() {
         return
       }
 
-      const dataAnalysis = analyzeImage({ axiosClient, imageURL })
-      console.log(dataAnalysis)
+      const { busqueda } = await analyzeImage({ axiosClient, imageURL })
+      changeLastLookup(busqueda)
+      // Verificar si busqueda siempre retorna algo
+      router.navigate("/results")
     } catch (error) {
       console.error(error)
     } finally {

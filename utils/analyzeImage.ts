@@ -1,5 +1,6 @@
 import { AxiosError, AxiosInstance } from "axios"
 import { extractErrors } from "./extractErrors"
+import { AnalysisResult } from "@/types/analyzeImage"
 
 interface Image {
   axiosClient: AxiosInstance,
@@ -8,11 +9,11 @@ interface Image {
 
 async function analyzeImage ({ axiosClient, imageURL }: Image) {
   try {
-    const response = await axiosClient.post('busquedas/analyze-image/', {
+    const { data } = await axiosClient.post<AnalysisResult>('busquedas/analisis-imagen/', {
       img_url: imageURL
     })
 
-    return response.data
+    return data
   } catch (error: any) {
     if (error instanceof AxiosError) {
       const message = extractErrors(error)
