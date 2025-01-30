@@ -9,6 +9,7 @@ import useAxios from '@/hooks/useAxios';
 import { useLookup } from '@/context/lookupContext';
 import { useRouter } from 'expo-router';
 import getSasURL from '@/utils/getSasURL';
+import { ActivityIndicator } from 'react-native';
 
 export default function AnalysisScreen() {
   const camera = useRef<CameraView>(null)
@@ -16,7 +17,7 @@ export default function AnalysisScreen() {
   const [loadingMessage, setLoadingMessage] = useState("")
   const [loading, setLoading] = useState(false)
   const axiosClient = useAxios()
-  const { setLastLookup } = useLookup()
+  const { changeLastLookup } = useLookup()
   const router = useRouter()
 
   if (!permission) {
@@ -48,12 +49,13 @@ export default function AnalysisScreen() {
       imageType: "jpg",
       quality: 0.1,
       scale: 0.8
-    } 
+    }
+
+    setLoading(true)
     try {
       const photo = await camera.current.takePictureAsync(cameraOptions)
       // Poner un mensaje de error cuando la foto sale mal
       if (!photo) return
-      setLoading(true)
       setLoadingMessage("Subiendo imagen...")
 
       const tokenSas = await getSasURL(axiosClient)
@@ -64,9 +66,9 @@ export default function AnalysisScreen() {
       }
 
       const { busqueda } = await analyzeImage({ axiosClient, imageURL })
-      setLastLookup(busqueda)
+      changeLastLookup(busqueda)
       // Verificar si búsqueda siempre retorna algo
-      // router.navigate("/results")
+      router.navigate("/results")
     } catch (error) {
       console.error(error)
     } finally {
@@ -77,6 +79,7 @@ export default function AnalysisScreen() {
   return (
     // Cargan permisos y se renderiza la cámara
     <View style={styles.container}>
+      {loading && <ActivityIndicator size='large'/>}
       <CameraView style={styles.camera} ref={camera}>
         <View style={styles.buttonContainer}>
           <TouchableOpacity style={styles.button} onPress={takePhoto}>
