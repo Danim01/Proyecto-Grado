@@ -7,6 +7,7 @@ import 'react-native-reanimated';
 import { PaperProvider } from 'react-native-paper'
 import { useColorScheme } from '@/hooks/useColorScheme';
 import { SessionProvider } from '@/context/authContext';
+import LookupProvider from '@/context/lookupContext';
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
@@ -31,11 +32,13 @@ export default function RootLayout() {
     <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
       <PaperProvider>
         <SessionProvider>
-          <Stack>
-            <Stack.Screen name="(app)" options={{ headerShown: false }} />
-            <Stack.Screen name="(login)" options={{ headerShown: false }} />
-            <Stack.Screen name="+not-found" />
-          </Stack>
+          <LookupProvider>
+            <Stack>
+              <Stack.Screen name="(app)" options={{ headerShown: false }} />
+              <Stack.Screen name="(login)" options={{ headerShown: false }} />
+              <Stack.Screen name="+not-found" />
+            </Stack>
+          </LookupProvider>
         </SessionProvider> 
       </PaperProvider>
     </ThemeProvider>

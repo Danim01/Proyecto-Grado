@@ -1,17 +1,17 @@
 import { Lookup } from "@/types/analyzeImage";
 import { PaginationResponse } from "@/types/common";
-import { createContext, PropsWithChildren, useCallback, useContext, useMemo, useState } from "react";
+import { createContext, PropsWithChildren, useCallback, useContext, useEffect, useMemo, useState } from "react";
 
 interface LookupContextType {
   lastLookup: Lookup | null
   paginatedLookups: PaginationResponse<Lookup> | null
-  changeLastLookup: (lookup: Lookup) => void
+  setLastLookup: React.Dispatch<React.SetStateAction<Lookup | null>>
 }
 
 const LookupContext = createContext<LookupContextType>({
   lastLookup: null,
   paginatedLookups: null,
-  changeLastLookup: () => null
+  setLastLookup: () => null
 })
 
 export function useLookup() {
@@ -28,15 +28,15 @@ function LookupProvider({ children }: PropsWithChildren) {
   const [lastLookup, setLastLookup] = useState<Lookup | null>(null)
   const [paginatedLookups, setPaginatedLookups] = useState<PaginationResponse<Lookup> | null>(null)
 
-  const changeLastLookup = useCallback((lookup: Lookup) => {
-    setLastLookup(lookup)
-  }, [])
+  useEffect(() => {
+    console.log("desde context ", lastLookup)
+  }, [lastLookup])
 
   const contextValue = useMemo(() => ({
     lastLookup,
     paginatedLookups,
-    changeLastLookup
-  }), [lastLookup, paginatedLookups, changeLastLookup])
+    setLastLookup
+  }), [lastLookup, paginatedLookups, setLastLookup])
 
   return (
     <LookupContext.Provider value={contextValue}>

@@ -10,7 +10,6 @@ export default function TabLayout() {
   const { signOut } = useSession()
 
   return (
-    <LookupProvider>
       <Tabs
         initialRouteName='home'
         screenOptions={({ route }) => ({
@@ -26,7 +25,12 @@ export default function TabLayout() {
             )
           }}
         />
+        <Tabs.Screen
+          name="results"
+          options={{
+            
+          }}
+        />
       </Tabs>
-    </LookupProvider>
   );
 }

@@ -35,12 +35,11 @@ function useAxios() {
 
       const tokens = axiosResponse.data
 
-      await uploadTokens(tokens)
-      setSession(tokens)
+      await uploadTokens({access: tokens.access, refresh: session.refresh})
+      setSession({access: tokens.access, refresh: session.refresh})
 
       // Actualiza el access token de la petición si el access token ya expiro
       req.headers.Authorization = tokens ? `Bearer ${tokens.access}` : null
-      console.log({axiosResponse})
       return req
     } catch (error) {
       console.error(error)

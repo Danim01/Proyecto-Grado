@@ -16,7 +16,7 @@ export default function AnalysisScreen() {
   const [loadingMessage, setLoadingMessage] = useState("")
   const [loading, setLoading] = useState(false)
   const axiosClient = useAxios()
-  const { changeLastLookup } = useLookup()
+  const { setLastLookup } = useLookup()
   const router = useRouter()
 
   if (!permission) {
@@ -64,9 +64,9 @@ export default function AnalysisScreen() {
       }
 
       const { busqueda } = await analyzeImage({ axiosClient, imageURL })
-      changeLastLookup(busqueda)
-      // Verificar si busqueda siempre retorna algo
-      router.navigate("/results")
+      setLastLookup(busqueda)
+      // Verificar si búsqueda siempre retorna algo
+      // router.navigate("/results")
     } catch (error) {
       console.error(error)
     } finally {
