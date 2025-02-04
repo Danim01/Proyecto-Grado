@@ -1,6 +1,6 @@
 import { CameraPictureOptions, CameraView, useCameraPermissions } from 'expo-camera';
 import { useRef, useState } from 'react';
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { StyleSheet, TouchableOpacity } from 'react-native';
 import { Button } from 'react-native-paper'
 import Feather from '@expo/vector-icons/Feather';
 import uploadImage from '@/utils/uploadImage';
@@ -10,6 +10,9 @@ import { useLookup } from '@/context/lookupContext';
 import { useRouter } from 'expo-router';
 import getSasURL from '@/utils/getSasURL';
 import { ActivityIndicator } from 'react-native';
+import { ThemedText } from '@/components/ThemedText';
+import { ThemedView } from '@/components/ThemedView';
+import React from 'react';
 
 export default function AnalysisScreen() {
   const camera = useRef<CameraView>(null)
@@ -23,21 +26,21 @@ export default function AnalysisScreen() {
   if (!permission) {
     // Cuando aun no han cargado los permisos
     return (
-      <View>
-        <Text>holi</Text>
-      </View>
+      <ThemedView>
+        <ThemedText>Cargando permisos</ThemedText>
+      </ThemedView>
     )
   }
 
   if (!permission.granted) {
     // Cargan los permisos pero aun no se han otorgan permisos
     return (
-      <View style={styles.container}>
-        <Text style={styles.message}>Necesitamos acceso a tu cámara</Text>
+      <ThemedView style={styles.container}>
+        <ThemedText style={styles.message}>Necesitamos acceso a tu cámara</ThemedText>
         <Button onPress={requestPermission}>
           Otorgar permisos
         </Button>
-      </View>
+      </ThemedView>
     );
   }
   
@@ -51,11 +54,11 @@ export default function AnalysisScreen() {
       scale: 0.8
     }
 
-    setLoading(true)
     try {
       const photo = await camera.current.takePictureAsync(cameraOptions)
       // Poner un mensaje de error cuando la foto sale mal
       if (!photo) return
+      setLoading(true)
       setLoadingMessage("Subiendo imagen...")
 
       const tokenSas = await getSasURL(axiosClient)
@@ -78,19 +81,24 @@ export default function AnalysisScreen() {
 
   return (
     // Cargan permisos y se renderiza la cámara
-    <View style={styles.container}>
-      {loading && <ActivityIndicator size='large'/>}
+    <ThemedView style={styles.container}>
+      {loading &&
+        <>
+          <ActivityIndicator size='large'/>
+          <ThemedText>{loadingMessage}</ThemedText>
+        </>
+      }
       <CameraView style={styles.camera} ref={camera}>
-        <View style={styles.buttonContainer}>
+        <ThemedView style={styles.buttonContainer}>
           <TouchableOpacity style={styles.button} onPress={takePhoto}>
             <Feather name="search" size={36} color="black" />
           </TouchableOpacity>
           <Button>
             <Feather name="search" size={24} color="white" />
           </Button>
-        </View>
+        </ThemedView>
       </CameraView>
-    </View>
+    </ThemedView>
   );
 }
 

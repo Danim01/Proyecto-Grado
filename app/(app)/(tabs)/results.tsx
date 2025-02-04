@@ -39,6 +39,7 @@ export default function ResultsView() {
                   }}
                   width={200}
                   height={200}
+                  
                 />
               </View>
               <View style={styles.containerTreatments}>
@@ -85,7 +86,7 @@ const styles = StyleSheet.create({
 
   image: {
     borderRadius: 6,
-
+    elevation: 15
   },
 
   containerTreatments: {

@@ -1,7 +1,7 @@
 import { Link, useRouter } from "expo-router"
 import { useEffect, useState } from "react"
 import { Controller, useForm } from "react-hook-form"
-import { Pressable, StyleSheet } from "react-native"
+import { StyleSheet } from "react-native"
 import { Button } from "react-native-paper"
 import { ThemedText } from '@/components/ThemedText'
 import { ThemedView } from "@/components/ThemedView"
@@ -9,7 +9,8 @@ import FormField from "@/components/FormField"
 import { registerSchema } from "@/schema"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { z } from "zod"
-import { User, useSession } from "@/context/authContext"
+import { useSession } from "@/context/authContext"
+import { User } from "@/types/session"
 
 export default function RegisterScreen() {
   const {
@@ -59,7 +60,11 @@ export default function RegisterScreen() {
         <ThemedText type="default">
           Ingresa tus datos para completar tu registro
         </ThemedText>
-        {userRegister && <ThemedText type="defaultSemiBold" style={{color: "#008000"}}>{userRegister.name}, su cuenta fue creada exitosamente, sera redirigido al inicio de sesión</ThemedText>}
+        {userRegister &&
+          <ThemedText type="defaultSemiBold" style={{color: "#008000"}}>
+            {userRegister.name}, su cuenta fue creada exitosamente, sera redirigido al inicio de sesión
+          </ThemedText>
+        }
       </ThemedView>
       <ThemedView style={styles.form}>
         <ThemedView>
@@ -70,7 +75,7 @@ export default function RegisterScreen() {
               <FormField
                 label="Nombre"
                 onChangeText={field.onChange}
-                placeholder="kevinPapasito"
+                placeholder="Sofia"
                 inputError={errors.name}
                 {...field}
               />
@@ -85,7 +90,7 @@ export default function RegisterScreen() {
               <FormField
                 label="Correo"
                 onChangeText={field.onChange}
-                placeholder="kevinPapasito@gmail.com"
+                placeholder="sofia@gmail.com"
                 inputError={errors.email}
                 {...field}
               />
