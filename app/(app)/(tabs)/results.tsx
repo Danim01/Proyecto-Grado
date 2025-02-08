@@ -30,10 +30,15 @@ export default function ResultsView() {
         {
           lastLookup ? (
             <>
-              <View style={styles.containerImage}>
-                <ThemedText type='title'>{lastLookup?.enfermedad.nombre}</ThemedText>
+              <View style={styles.headerContainer}>
+                <ThemedText
+                  type='title'
+                  style={[styles.headerTitle, styles.subtitle]}
+                >
+                  {lastLookup?.enfermedad.nombre}
+                </ThemedText>
                 <Image
-                  style={styles.image}
+                  style={styles.headerImage}
                   source={{
                     uri: lastLookup.imagen.url
                   }}
@@ -42,8 +47,13 @@ export default function ResultsView() {
                   
                 />
               </View>
-              <View style={styles.containerTreatments}>
-                <ThemedText type='subtitle'>{treatmentsHeader}</ThemedText>
+              <View style={styles.treatmentsContainer}>
+                <ThemedText
+                  type='subtitle'
+                  style={styles.subtitle}
+                >
+                  {treatmentsHeader}
+                </ThemedText>
                 {
                   lastLookup.enfermedad.tratamientos.map((treatment, i) => {
                     const id = `${lastLookup.id}_${lastLookup.enfermedad.nombre}_${i} `
@@ -75,22 +85,28 @@ export default function ResultsView() {
 const styles = StyleSheet.create({
   mainContainer: {
     flex: 1,
-    padding: 15,
-    gap: 20
+    paddingHorizontal: 16,
+    paddingVertical: 32
   },
-
-  containerImage: {
-    alignItems: "center",
-    gap: 8,
+  headerContainer: {
+    marginBottom: 32
   },
+  headerTitle: {
+    marginBottom: 8,
 
-  image: {
+  },
+  headerImage: {
     borderRadius: 6,
-    elevation: 15
+    elevation: 8,
+    alignSelf: 'center'
   },
-
-  containerTreatments: {
-    alignItems: "center",
-    gap: 20
+  subtitle: {
+    textAlign: 'center',
+    fontSize: 24,
+    fontWeight: '400',
+    textTransform: 'capitalize'
+  },
+  treatmentsContainer: {
+    gap: 24
   }
 })

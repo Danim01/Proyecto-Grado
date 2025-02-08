@@ -31,7 +31,13 @@
       [
         "expo-camera",
         {
-          "cameraPermission": "Permitir a $(PRODUCT_NAME) acceder a tu cámara"
+          "cameraPermission": "Permitir acceder a tu cámara"
+        }
+      ],
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "Permitir acceso a tu galería."
         }
       ],
       "expo-font",

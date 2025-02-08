@@ -3,25 +3,23 @@ import { useRef, useState } from 'react';
 import { StyleSheet, TouchableOpacity } from 'react-native';
 import { Button } from 'react-native-paper'
 import Feather from '@expo/vector-icons/Feather';
-import uploadImage from '@/utils/uploadImage';
-import analyzeImage from '@/utils/analyzeImage';
-import useAxios from '@/hooks/useAxios';
 import { useLookup } from '@/context/lookupContext';
 import { useRouter } from 'expo-router';
-import getSasURL from '@/utils/getSasURL';
 import { ActivityIndicator } from 'react-native';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
 import React from 'react';
+import * as ImagePicker from 'expo-image-picker';
+
 
 export default function AnalysisScreen() {
   const camera = useRef<CameraView>(null)
   const [permission, requestPermission] = useCameraPermissions()
   const [loadingMessage, setLoadingMessage] = useState("")
   const [loading, setLoading] = useState(false)
-  const axiosClient = useAxios()
-  const { changeLastLookup } = useLookup()
+  const { changeLastLookup, generateLookup } = useLookup()
   const router = useRouter()
+
 
   if (!permission) {
     // Cuando aun no han cargado los permisos
@@ -43,7 +41,6 @@ export default function AnalysisScreen() {
       </ThemedView>
     );
   }
-  
 
   async function takePhoto () {
     if (!camera.current) return
@@ -61,15 +58,13 @@ export default function AnalysisScreen() {
       setLoading(true)
       setLoadingMessage("Subiendo imagen...")
 
-      const tokenSas = await getSasURL(axiosClient)
-      const imageURL = await uploadImage({ tokenSas, uri: photo.uri })
-      if (!imageURL) {
+      const newLookup = await generateLookup(photo.uri)
+      if (!newLookup) {
         setLoading(false)
         return
       }
 
-      const { busqueda } = await analyzeImage({ axiosClient, imageURL })
-      changeLastLookup(busqueda)
+      changeLastLookup(newLookup)
       // Verificar si búsqueda siempre retorna algo
       router.navigate("/results")
     } catch (error) {
@@ -78,6 +73,33 @@ export default function AnalysisScreen() {
       setLoading(false)
     }
   }
+
+
+  const pickImage = async () => {
+    // No permissions request is necessary for launching the image library
+    const result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ['images', 'videos'],
+      allowsEditing: true,
+      //aspect: [4, 3],
+      quality: 1,
+    });
+
+    console.log(result);
+
+    if (result.canceled) return
+
+    const uri = result.assets[0].uri
+    const newLookup = await generateLookup(uri)
+    if (!newLookup) {
+      setLoading(false)
+      return
+    }
+
+    changeLastLookup(newLookup)
+    // Verificar si búsqueda siempre retorna algo
+    router.navigate("/results")
+
+  };
 
   return (
     // Cargan permisos y se renderiza la cámara
@@ -93,8 +115,8 @@ export default function AnalysisScreen() {
           <TouchableOpacity style={styles.button} onPress={takePhoto}>
             <Feather name="search" size={36} color="black" />
           </TouchableOpacity>
-          <Button>
-            <Feather name="search" size={24} color="white" />
+          <Button onPress={pickImage}>
+            <Feather name="image" size={24} color="white" />
           </Button>
         </ThemedView>
       </CameraView>

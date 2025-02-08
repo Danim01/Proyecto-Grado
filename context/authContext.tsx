@@ -62,7 +62,7 @@ export function SessionProvider({ children }: PropsWithChildren) {
       setIsLoading(false)
     }
   }, [])
-  
+
   const signIn = useCallback(async (credentials: Credentials) => {
     setIsLoading(true)
     try {
