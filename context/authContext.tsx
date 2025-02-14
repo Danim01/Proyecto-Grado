@@ -1,4 +1,4 @@
-import { useContext, createContext, type PropsWithChildren, useCallback, useMemo, useState } from 'react';
+import { useContext, createContext, type PropsWithChildren, useCallback, useMemo, useState, useEffect } from 'react';
 import singInAction from '@/utils/signIn';
 import registerAction from '@/utils/register';
 import { Button, Dialog, Portal, Text } from 'react-native-paper';
@@ -45,7 +45,7 @@ export function useSession() {
 
 export function SessionProvider({ children }: PropsWithChildren) {
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [session, setSession] = useState<Session | null>(getTokens());
+  const [session, setSession] = useState<Session | null>(null);
   const [error, setError] = useState('');
   const [isRegistering, setIsRegistering] = useState(false);
 
@@ -86,6 +86,11 @@ export function SessionProvider({ children }: PropsWithChildren) {
   const hideDialog = () => {
     setError('')
   }
+
+  useEffect(() => {
+    const prevSession = getTokens()
+    setSession(prevSession)
+  }, [])
   
   const contextValue = useMemo(() => ({
     session,
