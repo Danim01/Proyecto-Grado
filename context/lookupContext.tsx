@@ -7,6 +7,7 @@ import uploadImage from "@/utils/uploadImage";
 import {
   createContext, PropsWithChildren, useCallback, useContext, useMemo, useState
 } from "react";
+import { useGlobalError } from "./globalErrorsContext";
 
 interface LookupContextType {
   lastLookup: Lookup | null
@@ -36,6 +37,7 @@ function LookupProvider({ children }: PropsWithChildren) {
   const [lastLookup, setLastLookup] = useState<Lookup | null>(null)
   const [paginatedLookups, setPaginatedLookups] = useState<PaginationResponse<Lookup> | null>(null)
   const axiosClient = useAxios()
+  const { updateError } = useGlobalError()
 
   const changeLastLookup = useCallback((lookup: Lookup) => {
     setLastLookup(lookup)
@@ -45,13 +47,16 @@ function LookupProvider({ children }: PropsWithChildren) {
     try {
     const tokenSas = await getSasURL(axiosClient)
     const azureImageURL = await uploadImage({ tokenSas, uri: imageUri })
-    if (!azureImageURL) return null
+    if (!azureImageURL) return (
+      updateError("No se pudo subir la imagen, por favor intente de nuevo")
+    )
 
     const { busqueda } = await analyzeImage({ axiosClient, imageURL: azureImageURL })
     return busqueda
 
   } catch (error: any) {
-    console.error(error.message);
+    console.error(error.message)
+    updateError(error.message)
 
     return null
   }}, [axiosClient])

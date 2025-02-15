@@ -5,6 +5,7 @@ import { Button, Dialog, Portal, Text } from 'react-native-paper';
 import { Session } from '@/types/session';
 import { Credentials, CredentialsRegister } from '@/types/credentials';
 import { deleteTokens, getTokens } from '@/utils/manageTokens';
+import { useGlobalError } from './globalErrorsContext';
 
 interface AuthContextType {
   signIn: ({
@@ -17,7 +18,6 @@ interface AuthContextType {
     name, email, password
   }: CredentialsRegister) => Promise<any>;
   isRegistering: boolean;
-  error: string,
   setSession: React.Dispatch<React.SetStateAction<Session | null>>
 }
 
@@ -28,7 +28,6 @@ const AuthContext = createContext<AuthContextType>({
   session: null,
   isLoading: false,
   isRegistering: false,
-  error: "",
   setSession: () => null
 });
 
@@ -46,8 +45,8 @@ export function useSession() {
 export function SessionProvider({ children }: PropsWithChildren) {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [session, setSession] = useState<Session | null>(null);
-  const [error, setError] = useState('');
   const [isRegistering, setIsRegistering] = useState(false);
+  const { updateError } = useGlobalError()
 
   const register = useCallback(async (credentialRegister: CredentialsRegister) => {
     setIsRegistering(true)
@@ -56,12 +55,12 @@ export function SessionProvider({ children }: PropsWithChildren) {
       const register = await registerAction(credentialRegister)
       return register
     } catch (error: any) {
-      setError(error.message)
+      updateError(error.message)
     } finally {
       setIsRegistering(false)
       setIsLoading(false)
     }
-  }, [])
+  }, [updateError])
 
   const signIn = useCallback(async (credentials: Credentials) => {
     setIsLoading(true)
@@ -69,23 +68,18 @@ export function SessionProvider({ children }: PropsWithChildren) {
       const newSession = await singInAction(credentials)
       setSession(newSession);
     } catch (error: any) {
-      console.error(error.message.replace(",", ""))
-      setError(error.message)
+      updateError(error.message)
       setSession(null)
     } finally {
       setIsLoading(false)
 
     }
-  }, [setSession])
+  }, [setSession, updateError])
 
   const signOut = useCallback(() => {
     setSession(null)
     deleteTokens()
   }, [setSession])
-
-  const hideDialog = () => {
-    setError('')
-  }
 
   useEffect(() => {
     const prevSession = getTokens()
@@ -97,29 +91,15 @@ export function SessionProvider({ children }: PropsWithChildren) {
     isLoading,
     signIn,
     signOut,
-    error,
     register,
     isRegistering,
     setSession
-  }), [session, isLoading, signIn, signOut, error, register, isRegistering, setSession])
+  }), [session, isLoading, signIn, signOut, register, isRegistering, setSession])
 
   return (
     <AuthContext.Provider
       value={contextValue}
     >
-      <Portal>
-        <Dialog visible={error.length > 0}>
-          <Dialog.Title>Error</Dialog.Title>
-          <Dialog.Content>
-            <Text>
-              {error}
-            </Text>
-          </Dialog.Content>
-          <Dialog.Actions>
-            <Button onPress={hideDialog}>Cerrar</Button>
-          </Dialog.Actions>
-        </Dialog>
-      </Portal>
       {children}
     </AuthContext.Provider>
   );

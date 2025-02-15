@@ -8,6 +8,7 @@ import { PaperProvider } from 'react-native-paper'
 import { useColorScheme } from '@/hooks/useColorScheme';
 import { SessionProvider } from '@/context/authContext';
 import LookupProvider from '@/context/lookupContext';
+import { GlobalErrorProvide } from '@/context/globalErrorsContext';
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
@@ -32,15 +33,17 @@ export default function RootLayout() {
   return (
     <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
       <PaperProvider>
-        <SessionProvider>
-          <LookupProvider>
-            <Stack>
-              <Stack.Screen name="(app)" options={{ headerShown: false }} />
-              <Stack.Screen name="(login)" options={{ headerShown: false }} />
-              <Stack.Screen name="+not-found" />
-            </Stack>
-          </LookupProvider>
-        </SessionProvider> 
+        <GlobalErrorProvide>
+          <SessionProvider>
+            <LookupProvider>
+              <Stack>
+                <Stack.Screen name="(app)" options={{ headerShown: false }} />
+                <Stack.Screen name="(login)" options={{ headerShown: false }} />
+                <Stack.Screen name="+not-found" />
+              </Stack>
+            </LookupProvider>
+          </SessionProvider> 
+        </GlobalErrorProvide>
       </PaperProvider>
     </ThemeProvider>
   );

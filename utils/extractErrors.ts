@@ -12,7 +12,7 @@ export function extractErrors (error: AxiosError) {
     // Si tenemos varios errores los separamos por , y si es el ultimo un .
     errorValues.forEach((value, i) => {
       // length - 1 hace referencia al ultimo elemento de mi array
-      errorMessage += `${value}${i === (errorValues.length - 1) ? '.' : ', '}`
+      errorMessage += `${value}${i === (errorValues.length - 1) ? '' : ', '}`
     })
   } else {
     errorMessage = error.message
