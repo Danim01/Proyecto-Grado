@@ -1,6 +1,6 @@
 import { CameraPictureOptions, CameraView, useCameraPermissions } from 'expo-camera';
 import { useRef, useState } from 'react';
-import { StyleSheet, TouchableOpacity } from 'react-native';
+import { StyleSheet, TouchableOpacity, View } from 'react-native';
 import { Button } from 'react-native-paper'
 import Feather from '@expo/vector-icons/Feather';
 import { useLookup } from '@/context/lookupContext';
@@ -10,15 +10,15 @@ import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
 import React from 'react';
 import * as ImagePicker from 'expo-image-picker';
+import { useGlobalError } from '@/context/globalErrorsContext';
 
 
 export default function AnalysisScreen() {
   const camera = useRef<CameraView>(null)
   const [permission, requestPermission] = useCameraPermissions()
-  const [loadingMessage, setLoadingMessage] = useState("")
-  const [loading, setLoading] = useState(false)
-  const { changeLastLookup, generateLookup } = useLookup()
+  const { changeLastLookup, generateLookup, loading, loadingMessage } = useLookup()
   const router = useRouter()
+  const { updateError } = useGlobalError()
 
 
   if (!permission) {
@@ -54,23 +54,20 @@ export default function AnalysisScreen() {
     try {
       const photo = await camera.current.takePictureAsync(cameraOptions)
       // Poner un mensaje de error cuando la foto sale mal
-      if (!photo) return
-      setLoading(true)
-      setLoadingMessage("Subiendo imagen...")
-
-      const newLookup = await generateLookup(photo.uri)
-      if (!newLookup) {
-        setLoading(false)
+      if (!photo) {
+        updateError("Algo salio mal, por favor tome otra foto")
         return
       }
+
+      const newLookup = await generateLookup(photo.uri)
+      if (!newLookup) return
 
       changeLastLookup(newLookup)
       // Verificar si búsqueda siempre retorna algo
       router.navigate("/results")
-    } catch (error) {
-      console.error(error)
-    } finally {
-      setLoading(false)
+    } catch (error: any) {
+      console.error(error.message)
+      updateError("Algo salio mal, por favor tome otra foto")
     }
   }
 
@@ -86,12 +83,15 @@ export default function AnalysisScreen() {
 
     console.log(result);
 
-    if (result.canceled) return
+    if (result.canceled) {
+      updateError("Algo salio mal, por favor tome otra foto")
+      return
+    }
 
     const uri = result.assets[0].uri
     const newLookup = await generateLookup(uri)
     if (!newLookup) {
-      setLoading(false)
+      updateError("Algo salio mal, por favor tome otra foto")
       return
     }
 
@@ -105,10 +105,10 @@ export default function AnalysisScreen() {
     // Cargan permisos y se renderiza la cámara
     <ThemedView style={styles.container}>
       {loading &&
-        <>
+        <ThemedView style={styles.loadingContainer}>
           <ActivityIndicator size='large'/>
-          <ThemedText>{loadingMessage}</ThemedText>
-        </>
+          <ThemedText type='defaultSemiBold'>{loadingMessage}</ThemedText>
+        </ThemedView>
       }
       <CameraView style={styles.camera} ref={camera}>
         <ThemedView style={styles.buttonContainer}>
@@ -128,6 +128,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: 'center',
+    position: 'relative'
   },
   message: {
     textAlign: 'center',
@@ -164,4 +165,13 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: 'white',
   },
+  loadingContainer: {
+    position: 'absolute',
+    inset: 0,
+    zIndex: 10,
+    elevation: 10,
+    backgroundColor: 'white',
+    justifyContent: 'center',
+    alignItems: 'center'
+  }
 });

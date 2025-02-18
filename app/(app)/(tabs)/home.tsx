@@ -5,7 +5,7 @@ export default function HomeScreen() {
   return (
     <ThemedView>
       <Card title='Análisis' link='/analysis' />
-      <Card title='Historial' link='/home' />
+      <Card title='Historial' link='/history' />
     </ThemedView>
   )
 }

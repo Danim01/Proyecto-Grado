@@ -1,7 +1,11 @@
+import { PaginationResponse } from "./common";
+
 export interface AnalysisResult {
   mensaje:  string;
   busqueda: Lookup;
 }
+
+export type PaginatedLookup = PaginationResponse<Lookup>
 
 export interface Lookup {
   id:         string;

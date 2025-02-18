@@ -1,7 +1,6 @@
 import { useContext, createContext, type PropsWithChildren, useCallback, useMemo, useState, useEffect } from 'react';
 import singInAction from '@/utils/signIn';
 import registerAction from '@/utils/register';
-import { Button, Dialog, Portal, Text } from 'react-native-paper';
 import { Session } from '@/types/session';
 import { Credentials, CredentialsRegister } from '@/types/credentials';
 import { deleteTokens, getTokens } from '@/utils/manageTokens';
@@ -85,7 +84,7 @@ export function SessionProvider({ children }: PropsWithChildren) {
     const prevSession = getTokens()
     setSession(prevSession)
   }, [])
-  
+
   const contextValue = useMemo(() => ({
     session,
     isLoading,
