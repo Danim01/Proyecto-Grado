@@ -1,6 +1,6 @@
 import { CameraPictureOptions, CameraView, useCameraPermissions } from 'expo-camera';
-import { useRef, useState } from 'react';
-import { StyleSheet, TouchableOpacity, View } from 'react-native';
+import { useRef } from 'react';
+import { StyleSheet, TouchableOpacity } from 'react-native';
 import { Button } from 'react-native-paper'
 import Feather from '@expo/vector-icons/Feather';
 import { useLookup } from '@/context/lookupContext';

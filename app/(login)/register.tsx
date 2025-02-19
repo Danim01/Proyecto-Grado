@@ -34,7 +34,6 @@ export default function RegisterScreen() {
 
 
   useEffect(() => {
-    
   }, [])
 
   const onSubmit = async (data: any) => {

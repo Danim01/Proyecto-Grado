@@ -1,6 +1,7 @@
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
 import { useSession } from '@/context/authContext';
+import LookupProvider from '@/context/lookupContext';
 import { Redirect, Stack } from 'expo-router';
 import 'react-native-reanimated';
 
@@ -12,7 +13,7 @@ export default function AppLayout() {
     return (
       <ThemedView>
         <ThemedText type='title'>Cargando...</ThemedText>
-      </ThemedView> 
+      </ThemedView>
     )
   }
 
@@ -21,9 +22,11 @@ export default function AppLayout() {
   }
 
   return (
-    <Stack>
-      <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-      <Stack.Screen name="analysis" options={{ headerShown: false }} />
-    </Stack>
+    <LookupProvider>
+      <Stack>
+        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+        <Stack.Screen name="analysis" options={{ headerShown: false }} />
+      </Stack>
+    </LookupProvider>
   );
 }

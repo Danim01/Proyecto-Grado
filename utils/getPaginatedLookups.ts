@@ -1,10 +1,15 @@
 import { AxiosError, AxiosInstance } from "axios"
 import { extractErrors } from "./extractErrors"
 import { PaginatedLookup } from "@/types/analyzeImage"
+import { PaginatedOptions } from "@/types/common"
 
-async function getPaginatedLookups(axiosClient: AxiosInstance) {
+interface InterfacePaginated extends PaginatedOptions {
+  axiosClient: AxiosInstance
+}
+
+async function getPaginatedLookups({axiosClient, limit = 8, offset = 0}: InterfacePaginated) {
   try {
-    const { data } = await axiosClient.get<PaginatedLookup>("busquedas/")
+    const { data } = await axiosClient.get<PaginatedLookup>(`busquedas/?limit=${limit}&offset=${offset}`)
     return data
   } catch (error: any) {
     if (error instanceof AxiosError) {

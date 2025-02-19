@@ -13,3 +13,7 @@ export interface PaginationResponse<T> {
   results:  T[];
 }
 
+export interface PaginatedOptions {
+  limit?: number
+  offset?: number
+}

@@ -1,6 +1,5 @@
 import useAxios from "@/hooks/useAxios";
 import { Lookup, PaginatedLookup } from "@/types/analyzeImage";
-import { PaginationResponse } from "@/types/common";
 import analyzeImage from "@/utils/analyzeImage";
 import getSasURL from "@/utils/getSasURL";
 import uploadImage from "@/utils/uploadImage";
@@ -9,6 +8,7 @@ import {
 } from "react";
 import { useGlobalError } from "./globalErrorsContext";
 import getPaginatedLookupsAction from "@/utils/getPaginatedLookups";
+import { PaginatedOptions } from "@/types/common";
 interface LookupContextType {
   loading: boolean
   loadingMessage: string
@@ -16,7 +16,7 @@ interface LookupContextType {
   paginatedLookups: PaginatedLookup
   changeLastLookup: (lookup: Lookup) => void
   generateLookup: (imageUri: string) => Promise<Lookup | null>
-  getPaginatedLookups: () => void
+  getPaginatedLookups: ({limit, offset}: PaginatedOptions) => void
 }
 
 const initialPaginatedLookup: PaginatedLookup = {
@@ -25,6 +25,7 @@ const initialPaginatedLookup: PaginatedLookup = {
   previous: "",
   results: []
 }
+
 
 const LookupContext = createContext<LookupContextType>({
   loading: false,
@@ -55,10 +56,14 @@ function LookupProvider({ children }: PropsWithChildren) {
   const axiosClient = useAxios()
   const { updateError } = useGlobalError()
 
-  const getPaginatedLookups = useCallback(async () => {
+  const getPaginatedLookups = useCallback(async ({limit, offset}: PaginatedOptions) => {
     setLoading(true)
     try {
-      const newPaginatedLookup = await getPaginatedLookupsAction(axiosClient)
+      const newPaginatedLookup = await getPaginatedLookupsAction({
+        axiosClient,
+        limit,
+        offset
+      })
       setPaginatedLookups(newPaginatedLookup)
     } catch (error: any) {
       updateError(error.message)
@@ -94,8 +99,8 @@ function LookupProvider({ children }: PropsWithChildren) {
   }, [axiosClient, updateError])
 
   useEffect(() => {
-    getPaginatedLookups()
-  }, [getPaginatedLookups])
+    getPaginatedLookups({})
+  }, [])
 
   const contextValue = useMemo(() => ({
     loading,
@@ -104,7 +109,8 @@ function LookupProvider({ children }: PropsWithChildren) {
     paginatedLookups,
     changeLastLookup,
     generateLookup,
-    getPaginatedLookups
+    getPaginatedLookups,
+    setLastLookup
   }), [
     loading,
     loadingMessage,
@@ -112,7 +118,8 @@ function LookupProvider({ children }: PropsWithChildren) {
     paginatedLookups,
     changeLastLookup,
     generateLookup,
-    getPaginatedLookups
+    getPaginatedLookups,
+    setLastLookup
   ])
 
   return (

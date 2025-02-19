@@ -1,9 +1,13 @@
 import { Lookup } from "@/types/analyzeImage";
 import { ThemedView } from "./ThemedView";
-import { Image } from "react-native";
 import { ThemedText } from "./ThemedText";
+import { Card } from "react-native-paper";
+import { useLookup } from "@/context/lookupContext";
+import { useRouter } from "expo-router";
 
 export function LookupCard({ lookup }: { lookup: Lookup }) {
+  const { changeLastLookup } = useLookup()
+  const router = useRouter()
   const {
     id,
     enfermedad: {
@@ -17,10 +21,15 @@ export function LookupCard({ lookup }: { lookup: Lookup }) {
     }
   } = lookup
 
+  const handleResults = () => {
+    changeLastLookup(lookup)
+    router.navigate("/results")
+  }
+
   return (
-    <ThemedView key={id}>
+    <Card key={id} onPress={handleResults}>
       <ThemedView>
-        <Image
+        <Card.Cover
           source={{
             uri: url
           }}
@@ -28,10 +37,10 @@ export function LookupCard({ lookup }: { lookup: Lookup }) {
           height={100}
         />
       </ThemedView>
-      <ThemedView>
-        <ThemedText>{illnessName}</ThemedText>
+      <Card.Content>
+        <Card.Title title={illnessName} />
         <ThemedText>{locationName}</ThemedText>
-      </ThemedView>
-    </ThemedView>
+      </Card.Content>
+    </Card>
   )
 }
