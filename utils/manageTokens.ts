@@ -8,11 +8,11 @@ async function uploadTokens(tokens: Session) {
   await SecureStore.setItemAsync("tokens", JSON.stringify(tokens))
 }
 
-function getTokens(): Session | null {
-  const tokens = SecureStore.getItem("tokens")
+async function getTokens(): Promise<Session | null> {
+  const tokens = await SecureStore.getItemAsync("tokens")
 
   if (!tokens) return null
-  
+
   return JSON.parse(tokens) as Session
 }
 

@@ -26,7 +26,7 @@ export default function LoginScreen() {
   const { signIn } = useSession()
 
   const onSubmit = (data: any) => {
-     signIn(data)
+    signIn(data)
   }
 
   return (
@@ -46,7 +46,7 @@ export default function LoginScreen() {
               <FormField
                 label="Email"
                 onChangeText={field.onChange}
-                placeholder="kevinPapasito@gmail.com"
+                placeholder="sofia@gmail.com"
                 inputError={errors.email}
                 {...field}
               />

@@ -3,7 +3,7 @@ import singInAction from '@/utils/signIn';
 import registerAction from '@/utils/register';
 import { Session } from '@/types/session';
 import { Credentials, CredentialsRegister } from '@/types/credentials';
-import { deleteTokens, getTokens } from '@/utils/manageTokens';
+import { deleteTokens, getTokens, uploadTokens } from '@/utils/manageTokens';
 import { useGlobalError } from './globalErrorsContext';
 
 interface AuthContextType {
@@ -65,7 +65,8 @@ export function SessionProvider({ children }: PropsWithChildren) {
     setIsLoading(true)
     try {
       const newSession = await singInAction(credentials)
-      setSession(newSession);
+      setSession(newSession)
+      await uploadTokens(newSession)
     } catch (error: any) {
       updateError(error.message)
       setSession(null)
@@ -81,8 +82,17 @@ export function SessionProvider({ children }: PropsWithChildren) {
   }, [setSession])
 
   useEffect(() => {
-    const prevSession = getTokens()
-    setSession(prevSession)
+    // Un callback es una función que se le pasa a otra función en sus parámetros
+    // y se puede ejecutar en cualquier parte de la función a la que se le paso
+    // El callback de un useEffect no puede ser asíncrono
+    // Para permitir funciones asíncronas en un useEffect se crea una función dentro de esta
+    // para que ejecuten la operación asíncrona
+    const getPrevSession = async () => {
+      const prevSession = await getTokens()
+      setSession(prevSession)
+    }
+
+    getPrevSession()
   }, [])
 
   const contextValue = useMemo(() => ({

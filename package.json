@@ -47,7 +47,9 @@
     "react-native-uuid": "^2.0.3",
     "react-native-web": "~0.19.13",
     "zod": "^3.23.8",
-    "expo-image-picker": "~16.0.6"
+    "expo-image-picker": "~16.0.6",
+    "expo-image-manipulator": "~13.0.6",
+    "expo-asset": "~11.0.4"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",

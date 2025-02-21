@@ -9,6 +9,7 @@ import {
 import { useGlobalError } from "./globalErrorsContext";
 import getPaginatedLookupsAction from "@/utils/getPaginatedLookups";
 import { PaginatedOptions } from "@/types/common";
+import optimizeImage from "@/utils/optimizeImage";
 interface LookupContextType {
   loading: boolean
   loadingMessage: string
@@ -81,7 +82,8 @@ function LookupProvider({ children }: PropsWithChildren) {
     setLoadingMessage("Subiendo imagen")
     try {
       const tokenSas = await getSasURL(axiosClient)
-      const azureImageURL = await uploadImage({ tokenSas, uri: imageUri })
+      const optimizedImageUri = await optimizeImage(imageUri)
+      const azureImageURL = await uploadImage({ tokenSas, uri: optimizedImageUri })
       if (!azureImageURL) {
         updateError("No se pudo subir la imagen, por favor intente de nuevo")
         return null
