@@ -5,15 +5,10 @@ import { Session } from '@/types/session';
 import { Credentials, CredentialsRegister } from '@/types/credentials';
 import { deleteTokens, getTokens, uploadTokens } from '@/utils/manageTokens';
 import { useGlobalError } from './globalErrorsContext';
-import getProfileAction from '@/utils/getProfile';
-import useAxios from '@/hooks/useAxios';
-import { Profile } from '@/types/common';
-
 interface AuthContextType {
   session?: Session | null
   isLoading: boolean
   isRegistering: boolean
-  profile: Profile | null
   signIn: ({
     email, password
   }: Credentials) => void
@@ -22,19 +17,16 @@ interface AuthContextType {
     name, email, password
   }: CredentialsRegister) => Promise<any>
   setSession: React.Dispatch<React.SetStateAction<Session | null>>
-  getProfile: () => void
 }
 
 const AuthContext = createContext<AuthContextType>({
   session: null,
   isLoading: false,
   isRegistering: false,
-  profile: null,
   signIn: () => null,
   signOut: () => null,
   register: () => Promise.resolve(),
   setSession: () => null,
-  getProfile: () => null,
 });
 
 // Hook que da acceso al contexto de autenticación
@@ -53,22 +45,6 @@ export function SessionProvider({ children }: PropsWithChildren) {
   const [session, setSession] = useState<Session | null>(null);
   const [isRegistering, setIsRegistering] = useState(false);
   const { updateError } = useGlobalError();
-  const [profile, setProfile] = useState<Profile | null>(null);
-  const axiosClient = useAxios();
-
-  const getProfile = useCallback(async () => {
-    if (!session) return
-    console.log(session)
-    setIsLoading(true)
-    try {
-      const newProfile = await getProfileAction(axiosClient)
-      setProfile(newProfile)
-    } catch (error: any) {
-      updateError(error.message)
-    } finally {
-      setIsLoading(false)
-    }
-  }, [axiosClient, updateError, session])
 
   const register = useCallback(async (credentialRegister: CredentialsRegister) => {
     setIsRegistering(true)
@@ -122,22 +98,18 @@ export function SessionProvider({ children }: PropsWithChildren) {
     session,
     isLoading,
     isRegistering,
-    profile,
     signIn,
     signOut,
     register,
     setSession,
-    getProfile,
   }), [
     session,
     isLoading,
     isRegistering,
-    profile,
     signIn,
     signOut,
     register,
     setSession,
-    getProfile,
   ])
 
   return (

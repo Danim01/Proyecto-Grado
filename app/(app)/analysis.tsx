@@ -5,7 +5,6 @@ import { Button } from 'react-native-paper'
 import Feather from '@expo/vector-icons/Feather';
 import { useLookup } from '@/context/lookupContext';
 import { useRouter } from 'expo-router';
-import { ActivityIndicator } from 'react-native';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
 import React from 'react';
