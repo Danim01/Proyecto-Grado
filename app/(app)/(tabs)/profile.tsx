@@ -9,11 +9,8 @@ import FontAwesome from '@expo/vector-icons/FontAwesome';
 import { useCallback, useEffect, useState } from "react";
 import { Button, Divider, IconButton } from "react-native-paper";
 import getProfileAction from "@/utils/getProfile"
-import { EvilIcons } from "@expo/vector-icons";
-import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
-import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 import { StyleSheet } from "react-native";
-import { CardUser } from "@/components/CardUser";
+import CardUser from "@/components/CardUser";
 import capitalize from "@/utils/capitalize";
 
 export default function ProfileScreen (){

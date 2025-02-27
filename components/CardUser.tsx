@@ -10,7 +10,7 @@ type Props = {
   icon: ComponentProps<typeof MaterialCommunityIcons>["name"]
 }
 
-export const CardUser = ({ label, value, icon }: Props) => {
+export default function CardUser({ label, value, icon }: Props) {
   return (
     <ThemedView style={styles.containerInformation}>
       <ThemedView style={styles.containerIconName}>

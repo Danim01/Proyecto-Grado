@@ -6,7 +6,8 @@ export default function HomeScreen() {
     <ThemedView>
       <Card title='Análisis' link='/analysis' />
       <Card title='Historial' link='/history' />
-      <Card title='Profile' link='/profile' />
+      <Card title='Perfil' link='/profile' />
+      <Card title='Editar perfil' link='/history' />
     </ThemedView>
   )
 }
