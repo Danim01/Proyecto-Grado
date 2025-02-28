@@ -52,6 +52,12 @@
           "configureAndroidBackup": true
         }
       ],
+      [
+        "expo-location",
+        {
+          "isAndroidBackgroundLocationEnabled": false
+        }
+      ],
       "expo-asset"
     ],
     "experiments": {
