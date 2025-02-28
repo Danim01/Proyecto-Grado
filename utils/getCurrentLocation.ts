@@ -4,11 +4,18 @@ async function getCurrentLocation() {
 
   let { status } = await Location.requestForegroundPermissionsAsync()
   if (status !== 'granted') {
-    return('Permission to access location was denied')
+    return {
+      error: `
+        No se pudo acceder a la ubicación, por lo que se utilizará
+        una aproximada
+      `
+    }
   }
 
   let location = await Location.getCurrentPositionAsync({})
-  return(location);
+  return {
+    location
+  }
 }
 
 export default getCurrentLocation
