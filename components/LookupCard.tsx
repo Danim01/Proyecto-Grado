@@ -18,8 +18,11 @@ export function LookupCard({ lookup }: { lookup: Lookup }) {
     },
     imagen: {
       url
-    }
+    },
+    "fecha_creacion": date
   } = lookup
+
+  const dateObject = new Date(date)
 
   const handleResults = () => {
     changeLastLookup(lookup)
@@ -40,6 +43,7 @@ export function LookupCard({ lookup }: { lookup: Lookup }) {
       <Card.Content>
         <Card.Title title={illnessName} />
         <ThemedText>{locationName}</ThemedText>
+        <ThemedText>{dateObject.toLocaleDateString()}</ThemedText>
       </Card.Content>
     </Card>
   )

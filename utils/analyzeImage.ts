@@ -13,8 +13,10 @@ async function analyzeImage ({ axiosClient, imageURL, location }: Image) {
   try {
     const { data } = await axiosClient.post<AnalysisResult>('busquedas/analisis-imagen/', {
       img_url: imageURL,
-      latitud: location?.coords.latitude,
-      longitud: location?.coords.longitude
+      ubicacion: {
+        latitud: location?.coords.latitude,
+        longitud: location?.coords.longitude
+      }
     })
 
     return data
