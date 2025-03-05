@@ -6,7 +6,7 @@ import { Image, View, StyleSheet, ScrollView } from 'react-native'
 import React from 'react'
 import { ExternalPathString, Link } from 'expo-router'
 
-export default function ResultsView() {
+export default function ResultsScreen() {
   const { lastLookup } = useLookup()
 
   useEffect(() => {
@@ -44,7 +44,6 @@ export default function ResultsView() {
                   }}
                   width={200}
                   height={200}
-                  
                 />
               </View>
               <View style={styles.treatmentsContainer}>
@@ -73,10 +72,9 @@ export default function ResultsView() {
               </View>
             </>
           ) : (
-            <ThemedText>Cargando</ThemedText> 
+            <ThemedText>Cargando</ThemedText>
           )
         }
-        
       </ThemedView>
     </ScrollView>
   )

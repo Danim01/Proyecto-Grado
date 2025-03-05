@@ -1,6 +1,5 @@
 import { Colors } from '@/constants/Colors';
 import { useSession } from '@/context/authContext';
-import LookupProvider from '@/context/lookupContext';
 import { useColorScheme } from '@/hooks/useColorScheme';
 import { Tabs } from 'expo-router';
 import { Button } from 'react-native-paper';
@@ -28,8 +27,11 @@ export default function TabLayout() {
         <Tabs.Screen
           name="results"
           options={{
-            
+            // href: null
           }}
+        />
+        <Tabs.Screen
+          name="profile"
         />
       </Tabs>
   );

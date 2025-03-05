@@ -41,9 +41,9 @@ function useAxios() {
 
     try {
       if (!refreshToken || !accessToken) return req
-      
+
       const didTokenExpired = tokenExpired(accessToken)
-      
+
       if (!didTokenExpired) {
         req.headers.Authorization = accessToken ? `Bearer ${accessToken}` : null
         return req
@@ -57,7 +57,7 @@ function useAxios() {
       )
 
       const tokens = axiosResponse.data
-      
+
       accessTokenRef.current = tokens.access
       refreshTokenRef.current = tokens.refresh
 

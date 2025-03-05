@@ -1,5 +1,7 @@
 import { BlobServiceClient } from '@azure/storage-blob'
+import { AxiosError } from 'axios'
 import uuid from 'react-native-uuid'
+import { extractErrors } from './extractErrors'
 
 interface Params {
   uri: string
@@ -45,10 +47,14 @@ async function uploadImage({ uri, tokenSas }: Params) {
     const imageURLPurged = imageURLObj.toString()
 
     return imageURLPurged
-  } catch (error) {
-    console.error(error)
-    return null
-  }  
+  } catch (error: any) {
+    if (error instanceof AxiosError) {
+      const message = extractErrors(error)
+
+      throw new Error(message)
+    }
+    throw new Error(error.message)
+  }
 }
 
 export default uploadImage

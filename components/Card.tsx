@@ -7,7 +7,7 @@ interface CardProps {
   link: LinkProps["href"]
 }
 
-export function Card ({ title, link }: CardProps) {
+export function Card({ title, link }: CardProps) {
   return (
     <ThemedView>
       <Link href={link}>

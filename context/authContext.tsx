@@ -1,35 +1,32 @@
 import { useContext, createContext, type PropsWithChildren, useCallback, useMemo, useState, useEffect } from 'react';
 import singInAction from '@/utils/signIn';
 import registerAction from '@/utils/register';
-import { Button, Dialog, Portal, Text } from 'react-native-paper';
 import { Session } from '@/types/session';
 import { Credentials, CredentialsRegister } from '@/types/credentials';
-import { deleteTokens, getTokens } from '@/utils/manageTokens';
-
+import { deleteTokens, getTokens, uploadTokens } from '@/utils/manageTokens';
+import { useGlobalError } from './globalErrorsContext';
 interface AuthContextType {
+  session?: Session | null
+  isLoading: boolean
+  isRegistering: boolean
   signIn: ({
     email, password
-  }: Credentials) => void;
-  signOut: () => void;
-  session?: Session | null;
-  isLoading: boolean;
+  }: Credentials) => void
+  signOut: () => void
   register: ({
     name, email, password
-  }: CredentialsRegister) => Promise<any>;
-  isRegistering: boolean;
-  error: string,
+  }: CredentialsRegister) => Promise<any>
   setSession: React.Dispatch<React.SetStateAction<Session | null>>
 }
 
 const AuthContext = createContext<AuthContextType>({
-  signIn: () => null,
-  signOut: () => null,
-  register: () => Promise.resolve(),
   session: null,
   isLoading: false,
   isRegistering: false,
-  error: "",
-  setSession: () => null
+  signIn: () => null,
+  signOut: () => null,
+  register: () => Promise.resolve(),
+  setSession: () => null,
 });
 
 // Hook que da acceso al contexto de autenticación
@@ -46,8 +43,8 @@ export function useSession() {
 export function SessionProvider({ children }: PropsWithChildren) {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [session, setSession] = useState<Session | null>(null);
-  const [error, setError] = useState('');
   const [isRegistering, setIsRegistering] = useState(false);
+  const { updateError } = useGlobalError();
 
   const register = useCallback(async (credentialRegister: CredentialsRegister) => {
     setIsRegistering(true)
@@ -56,70 +53,69 @@ export function SessionProvider({ children }: PropsWithChildren) {
       const register = await registerAction(credentialRegister)
       return register
     } catch (error: any) {
-      setError(error.message)
+      updateError(error.message)
     } finally {
       setIsRegistering(false)
       setIsLoading(false)
     }
-  }, [])
+  }, [updateError])
 
   const signIn = useCallback(async (credentials: Credentials) => {
     setIsLoading(true)
     try {
       const newSession = await singInAction(credentials)
-      setSession(newSession);
+      setSession(newSession)
+      await uploadTokens(newSession)
     } catch (error: any) {
-      console.error(error.message.replace(",", ""))
-      setError(error.message)
+      updateError(error.message)
       setSession(null)
     } finally {
       setIsLoading(false)
 
     }
-  }, [setSession])
+  }, [setSession, updateError])
 
   const signOut = useCallback(() => {
     setSession(null)
     deleteTokens()
   }, [setSession])
 
-  const hideDialog = () => {
-    setError('')
-  }
-
   useEffect(() => {
-    const prevSession = getTokens()
-    setSession(prevSession)
+    // Un callback es una función que se le pasa a otra función en sus parámetros
+    // y se puede ejecutar en cualquier parte de la función a la que se le paso
+    // El callback de un useEffect no puede ser asíncrono
+    // Para permitir funciones asíncronas en un useEffect se crea una función dentro de esta
+    // para que ejecuten la operación asíncrona
+    const getPrevSession = async () => {
+      const prevSession = await getTokens()
+      setSession(prevSession)
+    }
+
+    getPrevSession()
   }, [])
-  
+
   const contextValue = useMemo(() => ({
     session,
     isLoading,
+    isRegistering,
     signIn,
     signOut,
-    error,
     register,
+    setSession,
+  }), [
+    session,
+    isLoading,
     isRegistering,
-    setSession
-  }), [session, isLoading, signIn, signOut, error, register, isRegistering, setSession])
+    signIn,
+    signOut,
+    register,
+    setSession,
+  ])
 
   return (
     <AuthContext.Provider
       value={contextValue}
     >
-      <Portal>
-        <Dialog visible={error.length > 0}>
-          <Dialog.Title>Error</Dialog.Title>
-          <Dialog.Content>
-            <Text>
-              {error}
-            </Text>
-          </Dialog.Content>
-          <Dialog.Actions>
-            <Button onPress={hideDialog}>Cerrar</Button>
-          </Dialog.Actions>
-        </Dialog>
-      </Portal>
       {children}
     </AuthContext.Provider>
   );

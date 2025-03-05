@@ -7,17 +7,22 @@ import 'react-native-reanimated';
 import { PaperProvider } from 'react-native-paper'
 import { useColorScheme } from '@/hooks/useColorScheme';
 import { SessionProvider } from '@/context/authContext';
-import LookupProvider from '@/context/lookupContext';
+import { GlobalErrorProvide } from '@/context/globalErrorsContext';
+import getCurrentLocation from '@/utils/getCurrentLocation';
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
-  const colorScheme = useColorScheme();
+  const colorScheme = useColorScheme()
   const [loaded] = useFonts({
     Chivo: require('../assets/fonts/Chivo.ttf'),
     Quicksand: require('../assets/fonts/Quicksand.ttf')
   });
+
+  useEffect(() => {
+    getCurrentLocation()
+  }, [])
 
   useEffect(() => {
     if (loaded) {
@@ -32,15 +37,15 @@ export default function RootLayout() {
   return (
     <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
       <PaperProvider>
-        <SessionProvider>
-          <LookupProvider>
+        <GlobalErrorProvide>
+          <SessionProvider>
             <Stack>
               <Stack.Screen name="(app)" options={{ headerShown: false }} />
               <Stack.Screen name="(login)" options={{ headerShown: false }} />
               <Stack.Screen name="+not-found" />
             </Stack>
-          </LookupProvider>
-        </SessionProvider> 
+          </SessionProvider>
+        </GlobalErrorProvide>
       </PaperProvider>
     </ThemeProvider>
   );

@@ -34,7 +34,6 @@ export default function RegisterScreen() {
 
 
   useEffect(() => {
-    
   }, [])
 
   const onSubmit = async (data: any) => {
@@ -105,7 +104,7 @@ export default function RegisterScreen() {
               <FormField
                 label="Contraseña"
                 onChangeText={field.onChange}
-                secureTextEntry
+                isPassword
                 placeholder="••••••••"
                 inputError={errors.password}
                 {...field}
@@ -121,7 +120,7 @@ export default function RegisterScreen() {
               <FormField
                 label="Confirmar Contraseña"
                 onChangeText={field.onChange}
-                secureTextEntry
+                isPassword
                 placeholder="••••••••"
                 inputError={errors.confirmPassword}
                 {...field}
