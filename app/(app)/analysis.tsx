@@ -20,7 +20,6 @@ export default function AnalysisScreen() {
   const router = useRouter()
   const { updateError } = useGlobalError()
 
-
   if (!permission) {
     // Cuando aun no han cargado los permisos
     return (
