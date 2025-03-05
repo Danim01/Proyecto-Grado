@@ -61,7 +61,7 @@ export default function LoginScreen() {
               <FormField
                 label="Contraseña"
                 onChangeText={field.onChange}
-                secureTextEntry
+                isPassword
                 placeholder="••••••••"
                 inputError={errors.password}
                 {...field}

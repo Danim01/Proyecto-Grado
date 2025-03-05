@@ -1,5 +1,6 @@
 import { ThemedText } from "@/components/ThemedText";
 import { createContext, PropsWithChildren, useCallback, useContext, useMemo, useState } from "react";
+import { ScrollView } from "react-native";
 import { Button, Dialog, Portal, Text } from "react-native-paper";
 
 interface GlobalErrorsType {
@@ -51,9 +52,11 @@ export function GlobalErrorProvide({children}: PropsWithChildren) {
             </ThemedText>
           </Dialog.Title>
           <Dialog.Content>
-            <ThemedText type="default">
-              {error}
-            </ThemedText>
+            <ScrollView>
+              <ThemedText type="default">
+                {error}
+              </ThemedText>
+            </ScrollView>
           </Dialog.Content>
           <Dialog.Actions>
             <Button onPress={hideDialog}>

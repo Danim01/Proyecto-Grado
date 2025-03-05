@@ -5,29 +5,28 @@ import { Session } from '@/types/session';
 import { Credentials, CredentialsRegister } from '@/types/credentials';
 import { deleteTokens, getTokens, uploadTokens } from '@/utils/manageTokens';
 import { useGlobalError } from './globalErrorsContext';
-
 interface AuthContextType {
+  session?: Session | null
+  isLoading: boolean
+  isRegistering: boolean
   signIn: ({
     email, password
-  }: Credentials) => void;
-  signOut: () => void;
-  session?: Session | null;
-  isLoading: boolean;
+  }: Credentials) => void
+  signOut: () => void
   register: ({
     name, email, password
-  }: CredentialsRegister) => Promise<any>;
-  isRegistering: boolean;
+  }: CredentialsRegister) => Promise<any>
   setSession: React.Dispatch<React.SetStateAction<Session | null>>
 }
 
 const AuthContext = createContext<AuthContextType>({
-  signIn: () => null,
-  signOut: () => null,
-  register: () => Promise.resolve(),
   session: null,
   isLoading: false,
   isRegistering: false,
-  setSession: () => null
+  signIn: () => null,
+  signOut: () => null,
+  register: () => Promise.resolve(),
+  setSession: () => null,
 });
 
 // Hook que da acceso al contexto de autenticación
@@ -45,7 +44,7 @@ export function SessionProvider({ children }: PropsWithChildren) {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [session, setSession] = useState<Session | null>(null);
   const [isRegistering, setIsRegistering] = useState(false);
-  const { updateError } = useGlobalError()
+  const { updateError } = useGlobalError();
 
   const register = useCallback(async (credentialRegister: CredentialsRegister) => {
     setIsRegistering(true)
@@ -98,12 +97,20 @@ export function SessionProvider({ children }: PropsWithChildren) {
   const contextValue = useMemo(() => ({
     session,
     isLoading,
+    isRegistering,
     signIn,
     signOut,
     register,
+    setSession,
+  }), [
+    session,
+    isLoading,
     isRegistering,
-    setSession
-  }), [session, isLoading, signIn, signOut, register, isRegistering, setSession])
+    signIn,
+    signOut,
+    register,
+    setSession,
+  ])
 
   return (
     <AuthContext.Provider

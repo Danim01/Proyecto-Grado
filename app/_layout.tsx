@@ -8,16 +8,21 @@ import { PaperProvider } from 'react-native-paper'
 import { useColorScheme } from '@/hooks/useColorScheme';
 import { SessionProvider } from '@/context/authContext';
 import { GlobalErrorProvide } from '@/context/globalErrorsContext';
+import getCurrentLocation from '@/utils/getCurrentLocation';
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
-  const colorScheme = useColorScheme();
+  const colorScheme = useColorScheme()
   const [loaded] = useFonts({
     Chivo: require('../assets/fonts/Chivo.ttf'),
     Quicksand: require('../assets/fonts/Quicksand.ttf')
   });
+
+  useEffect(() => {
+    getCurrentLocation()
+  }, [])
 
   useEffect(() => {
     if (loaded) {

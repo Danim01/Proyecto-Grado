@@ -12,6 +12,7 @@ export interface Lookup {
   enfermedad: Illness;
   ubicacion:  Location;
   imagen:     Image;
+  fecha_creacion: string;
 }
 
 export interface Illness {

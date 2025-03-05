@@ -25,6 +25,7 @@ async function deleteTokens() {
 }
 
 function tokenExpired(token: string): boolean {
+  if (!token) return true
   const decodedToken = jwtDecode<JWTPayload>(token)
 
   if (!decodedToken?.exp) return false

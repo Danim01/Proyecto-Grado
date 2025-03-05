@@ -9,6 +9,7 @@ async function register ({ name, email, password }: CredentialsRegister) {
       name, email, password
     })
 
+    
     return response.data
   } catch (error: any) {
     if (error instanceof AxiosError) {
