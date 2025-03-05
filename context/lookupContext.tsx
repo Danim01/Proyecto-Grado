@@ -9,6 +9,8 @@ import {
 import { useGlobalError } from "./globalErrorsContext";
 import getPaginatedLookupsAction from "@/utils/getPaginatedLookups";
 import { PaginatedOptions } from "@/types/common";
+import optimizeImage from "@/utils/optimizeImage";
+import getCurrentLocation from "@/utils/getCurrentLocation";
 interface LookupContextType {
   loading: boolean
   loadingMessage: string
@@ -77,18 +79,31 @@ function LookupProvider({ children }: PropsWithChildren) {
   }, [])
 
   const generateLookup = useCallback(async (imageUri: string) => {
+
     setLoading(true)
     setLoadingMessage("Subiendo imagen")
     try {
       const tokenSas = await getSasURL(axiosClient)
-      const azureImageURL = await uploadImage({ tokenSas, uri: imageUri })
+      const optimizedImageUri = await optimizeImage(imageUri)
+      const azureImageURL = await uploadImage({ tokenSas, uri: optimizedImageUri })
       if (!azureImageURL) {
         updateError("No se pudo subir la imagen, por favor intente de nuevo")
         return null
       }
 
+      setLoadingMessage("Obteniendo ubicación")
+      const { location, error } = await getCurrentLocation()
+
+      if (error) {
+        updateError(error)
+      }
+
       setLoadingMessage("Analizando imagen")
-      const { busqueda } = await analyzeImage({ axiosClient, imageURL: azureImageURL })
+      const { busqueda } = await analyzeImage({
+        axiosClient,
+        imageURL: azureImageURL,
+        location
+      })
       return busqueda
     } catch (error: any) {
       updateError(error.message)

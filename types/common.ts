@@ -17,3 +17,8 @@ export interface PaginatedOptions {
   limit?: number
   offset?: number
 }
+
+export interface Profile {
+  name: string
+  email: string
+}

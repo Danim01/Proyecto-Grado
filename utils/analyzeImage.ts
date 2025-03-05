@@ -1,16 +1,22 @@
 import { AxiosError, AxiosInstance } from "axios"
 import { extractErrors } from "./extractErrors"
 import { AnalysisResult } from "@/types/analyzeImage"
+import { LocationObject } from "expo-location"
 
 interface Image {
   axiosClient: AxiosInstance,
-  imageURL: string
+  imageURL: string,
+  location?: LocationObject
 }
 
-async function analyzeImage ({ axiosClient, imageURL }: Image) {
+async function analyzeImage ({ axiosClient, imageURL, location }: Image) {
   try {
     const { data } = await axiosClient.post<AnalysisResult>('busquedas/analisis-imagen/', {
-      img_url: imageURL
+      img_url: imageURL,
+      ubicacion: {
+        latitud: location?.coords.latitude,
+        longitud: location?.coords.longitude
+      }
     })
 
     return data

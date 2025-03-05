@@ -3,31 +3,30 @@ import singInAction from '@/utils/signIn';
 import registerAction from '@/utils/register';
 import { Session } from '@/types/session';
 import { Credentials, CredentialsRegister } from '@/types/credentials';
-import { deleteTokens, getTokens } from '@/utils/manageTokens';
+import { deleteTokens, getTokens, uploadTokens } from '@/utils/manageTokens';
 import { useGlobalError } from './globalErrorsContext';
-
 interface AuthContextType {
+  session?: Session | null
+  isLoading: boolean
+  isRegistering: boolean
   signIn: ({
     email, password
-  }: Credentials) => void;
-  signOut: () => void;
-  session?: Session | null;
-  isLoading: boolean;
+  }: Credentials) => void
+  signOut: () => void
   register: ({
     name, email, password
-  }: CredentialsRegister) => Promise<any>;
-  isRegistering: boolean;
+  }: CredentialsRegister) => Promise<any>
   setSession: React.Dispatch<React.SetStateAction<Session | null>>
 }
 
 const AuthContext = createContext<AuthContextType>({
-  signIn: () => null,
-  signOut: () => null,
-  register: () => Promise.resolve(),
   session: null,
   isLoading: false,
   isRegistering: false,
-  setSession: () => null
+  signIn: () => null,
+  signOut: () => null,
+  register: () => Promise.resolve(),
+  setSession: () => null,
 });
 
 // Hook que da acceso al contexto de autenticación
@@ -45,7 +44,7 @@ export function SessionProvider({ children }: PropsWithChildren) {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [session, setSession] = useState<Session | null>(null);
   const [isRegistering, setIsRegistering] = useState(false);
-  const { updateError } = useGlobalError()
+  const { updateError } = useGlobalError();
 
   const register = useCallback(async (credentialRegister: CredentialsRegister) => {
     setIsRegistering(true)
@@ -65,7 +64,8 @@ export function SessionProvider({ children }: PropsWithChildren) {
     setIsLoading(true)
     try {
       const newSession = await singInAction(credentials)
-      setSession(newSession);
+      setSession(newSession)
+      await uploadTokens(newSession)
     } catch (error: any) {
       updateError(error.message)
       setSession(null)
@@ -81,19 +81,36 @@ export function SessionProvider({ children }: PropsWithChildren) {
   }, [setSession])
 
   useEffect(() => {
-    const prevSession = getTokens()
-    setSession(prevSession)
+    // Un callback es una función que se le pasa a otra función en sus parámetros
+    // y se puede ejecutar en cualquier parte de la función a la que se le paso
+    // El callback de un useEffect no puede ser asíncrono
+    // Para permitir funciones asíncronas en un useEffect se crea una función dentro de esta
+    // para que ejecuten la operación asíncrona
+    const getPrevSession = async () => {
+      const prevSession = await getTokens()
+      setSession(prevSession)
+    }
+
+    getPrevSession()
   }, [])
 
   const contextValue = useMemo(() => ({
     session,
     isLoading,
+    isRegistering,
     signIn,
     signOut,
     register,
+    setSession,
+  }), [
+    session,
+    isLoading,
     isRegistering,
-    setSession
-  }), [session, isLoading, signIn, signOut, register, isRegistering, setSession])
+    signIn,
+    signOut,
+    register,
+    setSession,
+  ])
 
   return (
     <AuthContext.Provider

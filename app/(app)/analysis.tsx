@@ -5,12 +5,12 @@ import { Button } from 'react-native-paper'
 import Feather from '@expo/vector-icons/Feather';
 import { useLookup } from '@/context/lookupContext';
 import { useRouter } from 'expo-router';
-import { ActivityIndicator } from 'react-native';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
 import React from 'react';
 import * as ImagePicker from 'expo-image-picker';
 import { useGlobalError } from '@/context/globalErrorsContext';
+import Loader from '@/components/Loader';
 
 
 export default function AnalysisScreen() {
@@ -19,7 +19,6 @@ export default function AnalysisScreen() {
   const { changeLastLookup, generateLookup, loading, loadingMessage } = useLookup()
   const router = useRouter()
   const { updateError } = useGlobalError()
-
 
   if (!permission) {
     // Cuando aun no han cargado los permisos
@@ -105,10 +104,7 @@ export default function AnalysisScreen() {
     // Cargan permisos y se renderiza la cámara
     <ThemedView style={styles.container}>
       {loading &&
-        <ThemedView style={styles.loadingContainer}>
-          <ActivityIndicator size='large'/>
-          <ThemedText type='defaultSemiBold'>{loadingMessage}</ThemedText>
-        </ThemedView>
+        <Loader text={loadingMessage}/>
       }
       <CameraView style={styles.camera} ref={camera}>
         <ThemedView style={styles.buttonContainer}>
@@ -164,14 +160,5 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontWeight: 'bold',
     color: 'white',
-  },
-  loadingContainer: {
-    position: 'absolute',
-    inset: 0,
-    zIndex: 10,
-    elevation: 10,
-    backgroundColor: 'white',
-    justifyContent: 'center',
-    alignItems: 'center'
   }
 });
