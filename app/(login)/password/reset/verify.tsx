@@ -1,10 +1,10 @@
-import { ThemedText } from "@/components/ThemedText";
+import Loader from "@/components/Loader";
 import { ThemedView } from "@/components/ThemedView";
 
 function VerifyPasswordScreen() {
   return (
     <ThemedView>
-      <ThemedText>Verificando...</ThemedText>
+      <Loader text="Verificando..."/>
     </ThemedView>
   )
 }
