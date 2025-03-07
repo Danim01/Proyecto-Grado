@@ -4,6 +4,7 @@ import { ThemedText } from "./ThemedText";
 import { Card } from "react-native-paper";
 import { useLookup } from "@/context/lookupContext";
 import { useRouter } from "expo-router";
+import { format } from "@formkit/tempo"
 
 export function LookupCard({ lookup }: { lookup: Lookup }) {
   const { changeLastLookup } = useLookup()
@@ -43,7 +44,7 @@ export function LookupCard({ lookup }: { lookup: Lookup }) {
       <Card.Content>
         <Card.Title title={illnessName} />
         <ThemedText>{locationName}</ThemedText>
-        <ThemedText>{dateObject.toLocaleDateString()}</ThemedText>
+        <ThemedText>{format(dateObject, "MMMM D, YYYY h:mm a")}</ThemedText>
       </Card.Content>
     </Card>
   )

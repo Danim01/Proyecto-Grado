@@ -4,10 +4,8 @@ import { ThemedText } from '@/components/ThemedText'
 import { ThemedView } from '@/components/ThemedView'
 import { useGlobalError } from '@/context/globalErrorsContext'
 import { resetPasswordSchema } from '@/schema'
-import { extractErrors } from '@/utils/extractErrors'
 import sendEmail from '@/utils/sendEmail'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { AxiosError } from 'axios'
 import { useState } from 'react'
 import { Controller, useForm } from "react-hook-form"
 import { StyleSheet } from "react-native"
@@ -19,6 +17,7 @@ type FormDataType = z.infer<typeof resetPasswordSchema>
 export default function ResetPasswordScreen () {
   const {
     control,
+    reset,
     handleSubmit,
     formState: { errors },
   } = useForm<FormDataType>({
@@ -34,11 +33,15 @@ export default function ResetPasswordScreen () {
   const onSubmit = async (data: FormDataType) => {
     setLoading(true)
     try {
-      const response = await sendEmail(data.email)
+      await sendEmail(data.email)
       setIsFinished(true)
+      reset()
     } catch (error: any) {
       console.error(error.message)
       updateError("Algo salio mal, por favor ingrese nuevamente su correo")
+      reset()
+    } finally {
+      setLoading(false)
     }
   }
 
@@ -50,7 +53,7 @@ export default function ResetPasswordScreen () {
       {isFinished && (
         <>
           <Icon
-            source="checkcircle"
+            source="check-circle"
             size={20}
             color='green'
           />
