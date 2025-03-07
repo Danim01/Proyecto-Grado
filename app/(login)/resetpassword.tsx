@@ -1,34 +1,65 @@
 import FormField from '@/components/FormField'
+import Loader from '@/components/Loader'
 import { ThemedText } from '@/components/ThemedText'
 import { ThemedView } from '@/components/ThemedView'
+import { useGlobalError } from '@/context/globalErrorsContext'
 import { resetPasswordSchema } from '@/schema'
+import sendEmail from '@/utils/sendEmail'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { useState } from "react"
+import { useState } from 'react'
 import { Controller, useForm } from "react-hook-form"
-import { Pressable, StyleSheet } from "react-native"
-import { Button } from "react-native-paper"
+import { StyleSheet } from "react-native"
+import { Button, Icon } from "react-native-paper"
 import { z } from 'zod'
 
-export default function ResetPassword () {
+type FormDataType = z.infer<typeof resetPasswordSchema>
+
+export default function ResetPasswordScreen () {
   const {
     control,
+    reset,
     handleSubmit,
     formState: { errors },
-  } = useForm<z.infer<typeof resetPasswordSchema>>({
+  } = useForm<FormDataType>({
     resolver: zodResolver(resetPasswordSchema),
     defaultValues: {
       email: ""
     }
   })
-  const [formData, setFormData] = useState(null)
+  const [loading, setLoading] = useState(false)
+  const [isFinished, setIsFinished] = useState(false)
+  const { updateError } = useGlobalError()
 
-  const onSubmit = (data: any) => {
-    console.log("Submitted Data:", data)
-    setFormData(data)
+  const onSubmit = async (data: FormDataType) => {
+    setLoading(true)
+    try {
+      await sendEmail(data.email)
+      setIsFinished(true)
+      reset()
+    } catch (error: any) {
+      console.error(error.message)
+      updateError("Algo salio mal, por favor ingrese nuevamente su correo")
+      reset()
+    } finally {
+      setLoading(false)
+    }
   }
 
   return (
     <ThemedView style={styles.mainContainer}>
+      {loading &&
+        <Loader text='Enviando correo'/>
+      }
+      {isFinished && (
+        <>
+          <Icon
+            source="check-circle"
+            size={20}
+            color='green'
+          />
+          <ThemedText type='defaultSemiBold'>A tu correo se mando un link para restablecer la contraseña</ThemedText>
+        </>
+      )}
       <ThemedText type='title'>Recuperar Contraseña</ThemedText>
       <ThemedView>
         <Controller
@@ -37,7 +68,7 @@ export default function ResetPassword () {
             <FormField
               label="Correo"
               onChangeText={field.onChange}
-              placeholder="kevinPapasito@gmail.com"
+              placeholder="sofia@gmail.com"
               inputError={errors.email}
               {...field}
             />

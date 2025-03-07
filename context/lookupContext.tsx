@@ -115,7 +115,7 @@ function LookupProvider({ children }: PropsWithChildren) {
 
   useEffect(() => {
     getPaginatedLookups({})
-  }, [])
+  }, [lastLookup])
 
   const contextValue = useMemo(() => ({
     loading,

@@ -10,7 +10,7 @@ export default function LoginLayout() {
     return (
       <ThemedView>
         <ThemedText type='title'>Cargando...</ThemedText>
-      </ThemedView> 
+      </ThemedView>
     )
   }
 
@@ -32,6 +32,7 @@ export default function LoginLayout() {
       <Stack.Screen name="index" />
       <Stack.Screen name="register" />
       <Stack.Screen name="resetpassword" />
+      <Stack.Screen name="password/reset/verify" />
     </Stack>
   )
 }
