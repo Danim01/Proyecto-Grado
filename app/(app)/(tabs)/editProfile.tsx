@@ -1,6 +1,9 @@
 import FormField from "@/components/FormField";
 import { ThemedView } from "@/components/ThemedView";
+import { useGlobalError } from "@/context/globalErrorsContext";
+import useAxios from "@/hooks/useAxios";
 import { editProfileSchema } from "@/schema";
+import editProfile from "@/utils/editProfile";
 import { FontAwesome } from "@expo/vector-icons";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Controller, useForm } from "react-hook-form";
@@ -19,12 +22,15 @@ export default function EditProfileScreen() {
       password: ""
     }
   })
+  const axiosClient = useAxios()
+  const { updateError } = useGlobalError()
 
-  const onSubmit = (data: any) => {
+  const onSubmit = async (data: any) => {
     try {
-      
-    } catch (error) {
-      
+      const response = await editProfile({ axiosClient, email: data })
+    } catch (error: any) {
+      console.error(error.message)
+      updateError("ho")
     }
   }
   return (
@@ -38,13 +44,13 @@ export default function EditProfileScreen() {
             <FormField
               label="Nombre"
               onChangeText={field.onChange}
-              inputError={errors.password}
+              inputError={errors.name}
               {...field}
             />
           )}
         />
       </ThemedView>
-      <Button onPress={handleSubmit(onsubmit)}>Guardar</Button>
+      <Button onPress={handleSubmit(onSubmit)}>Guardar</Button>
       <Button>Cambiar Contraseña</Button>
     </ThemedView>
   )
