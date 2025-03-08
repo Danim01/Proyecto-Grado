@@ -1,7 +1,7 @@
 import { z } from "zod"
 
 // Validación de la página "recuperar contraseña"
-const newPasswordSchema = z.object({
+const basePasswordSchema = z.object({
   password: z
   .string()
   .min(1, { message: "La contraseña es requerida" })
@@ -11,4 +11,4 @@ const newPasswordSchema = z.object({
     .min(1, { message: "Este campo es requerido" })
 })
 
-export default newPasswordSchema
+export default basePasswordSchema

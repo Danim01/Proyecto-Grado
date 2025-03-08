@@ -3,97 +3,89 @@ import Loader from "@/components/Loader";
 import { ThemedText } from "@/components/ThemedText";
 import { ThemedView } from "@/components/ThemedView";
 import { useGlobalError } from "@/context/globalErrorsContext";
-import { forgetPasswordSchema } from "@/schema";
+import useAxios from "@/hooks/useAxios";
+import { editPasswordSchema } from "@/schema";
 import saveNewPassword from "@/utils/saveNewPassword";
+import verifyOldPassword from "@/utils/verifyOldPassword";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Redirect, useLocalSearchParams, useRouter } from "expo-router";
-import { useEffect, useRef, useState } from "react";
+import { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { Button, Icon } from "react-native-paper";
 import { z } from "zod";
 
-type FormType = z.infer<typeof forgetPasswordSchema>
+type EditPasswordType = z.infer<typeof editPasswordSchema>
 
-function NewPasswordScreen() {
+export default function EditPasswordScreen() {
   const {
     handleSubmit,
     reset,
     control,
     formState: { errors },
-  } = useForm<FormType>({
-    resolver: zodResolver(forgetPasswordSchema),
+  } = useForm<EditPasswordType>({
+    resolver: zodResolver(editPasswordSchema),
     defaultValues: {
+      oldPassword: "",
       password: "",
       confirmPassword: ""
     }
   })
+  const axiosClient = useAxios()
   const { updateError } = useGlobalError()
-  const local = useLocalSearchParams<{ token: string, uidb64: string }>()
   const [loading, setLoading] = useState(false)
   const [isFinished, setIsFinished] = useState(false)
-  const router = useRouter()
-  const timeOutRef = useRef<NodeJS.Timeout | null>(null)
 
-  useEffect(() => {
-    return () => {
-      if (timeOutRef.current) {
-        clearTimeout(timeOutRef.current)
-      }
-    }
-  }, [])
-
-  if (!local.token || !local.uidb64) {
-    updateError("Algo salio mal, inténtalo de nuevo")
-    return <Redirect href="/" />
-  }
-
-  const onSubmit = async (data: FormType) => {
+  const onSubmit = async (data: EditPasswordType) => {
     setLoading(true)
     try {
-      await saveNewPassword({
-        new_password: data.password,
-        confirm_password: data.confirmPassword,
-        token: local.token,
-        uidb64: local.uidb64
-      })
-      reset()
+      const response = await verifyOldPassword({ axiosClient, old_password: data.oldPassword })
+      await saveNewPassword({ token: response.token, uidb64: response.uuid, new_password: data.password, confirm_password: data.confirmPassword })
       setIsFinished(true)
+      reset()
     } catch (error: any) {
-      console.error(error.message)
-      updateError("Algo salio mal, intente de nuevo mas tarde")
+      updateError(error.message)
     } finally {
       setLoading(false)
-      const timeOutId = setTimeout(() => {
-        router.navigate("/")
-      }, 5000)
-      timeOutRef.current = timeOutId
     }
   }
-
 
   return (
     <ThemedView>
       {loading &&
-        <Loader text="Guardando nueva contraseña"/>
+        <Loader text="Validando información"/>
       }
-      {isFinished && (
+      {isFinished &&
         <>
           <Icon
             source="check-circle"
             size={20}
-            color='green'
+            color="green"
           />
-          <ThemedText type='defaultSemiBold'>A tu correo se mando un link para restablecer la contraseña</ThemedText>
-      </>
-      )}
-      <ThemedText>Ingrese su contraseña nueva</ThemedText>
+          <ThemedText>Se actualizo la contraseña correctamente</ThemedText>
+        </>
+      }
+      <ThemedView>
+          <Controller
+            control={control}
+            name="oldPassword"
+            render={({ field }) => (
+              <FormField
+                label="Contraseña antigua"
+                onChangeText={field.onChange}
+                isPassword
+                placeholder="••••••••"
+                inputError={errors.password}
+                {...field}
+              />
+            )}
+          />
+        </ThemedView>
       <ThemedView>
           <Controller
             control={control}
             name="password"
             render={({ field }) => (
               <FormField
-                label="Contraseña"
+                label="Contraseña nueva"
                 onChangeText={field.onChange}
                 isPassword
                 placeholder="••••••••"
@@ -109,7 +101,7 @@ function NewPasswordScreen() {
             name="confirmPassword"
             render={({ field }) => (
               <FormField
-                label="Confirmar Contraseña"
+                label="Confirmar Contraseña nueva"
                 onChangeText={field.onChange}
                 isPassword
                 placeholder="••••••••"
@@ -123,5 +115,3 @@ function NewPasswordScreen() {
     </ThemedView>
   )
 }
-
-export default NewPasswordScreen

@@ -1,4 +1,5 @@
 import { z } from "zod";
+import newPasswordSchema from "./basePassword";
 
 // Validación de la página "registro"
 const registerSchema = z.object({
@@ -9,14 +10,7 @@ const registerSchema = z.object({
     .string()
     .min(1, { message: "El correo es requerido" })
     .email({ message: "El correo es invalido" }),
-  password: z
-    .string()
-    .min(1, { message: "La contraseña es requerida" })
-    .min(8, { message: "Debe tener mínimo 8 caracteres" }),
-  confirmPassword: z
-    .string()
-    .min(1, { message: "Este campo es requerido" })
-}).refine((data) => data.password === data.confirmPassword, {
+}).merge(newPasswordSchema).refine((data) => data.password === data.confirmPassword, {
   message: "Las contraseñas no coinciden",
   path: ["confirmPassword"]
 })

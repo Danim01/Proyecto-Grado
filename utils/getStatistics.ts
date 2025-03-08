@@ -2,17 +2,10 @@ import { baseURL } from "@/constants/api"
 import { AxiosError, AxiosInstance } from "axios"
 import { extractErrors } from "./extractErrors"
 
-interface Props {
-  axiosClient: AxiosInstance,
-  name: string
-}
 
-async function editProfile({ axiosClient, ...profileData }: Props) {
+async function getStatistics(axiosClient: AxiosInstance) {
   try {
-    const response = await axiosClient.patch(`${baseURL}usuario/detalle/`, {
-      ...profileData
-    })
-
+    const response = await axiosClient.get(`${baseURL}busquedas/estadisticas/`)
     console.log(response.data)
   } catch (error: any) {
     if (error instanceof AxiosError) {
@@ -23,4 +16,4 @@ async function editProfile({ axiosClient, ...profileData }: Props) {
   }
 }
 
-export default editProfile
+export default getStatistics
