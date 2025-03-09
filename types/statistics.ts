@@ -10,7 +10,8 @@ export interface Statistics {
 
 export interface DiseaseCount {
   saludable: number;
-  
+  roya: number;
+  mildiu_polvoriento: number;
 }
 
 export interface FrequencyByDate {
