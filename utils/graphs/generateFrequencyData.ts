@@ -3,10 +3,17 @@ import { DiseaseCount } from "@/types/statistics";
 function generateFrequencyData(data: DiseaseCount) {
   //Crea un array de objetos con la información de la cantidad
   // de busquedas por enfermedad
-  const graphData = Object.entries(data).map(([illness, count]) => ({
-    illness,
-    count
-  }))
+  const labelData = Object.keys(data)
+  const valueData = Object.values(data).map(Number)
+
+  const graphData = {
+    labels: labelData,
+    datasets: [
+      {
+        data: valueData
+      }
+    ]
+  }
 
   return graphData
   /*

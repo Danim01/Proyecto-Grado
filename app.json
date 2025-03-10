@@ -58,6 +58,13 @@
           "isAndroidBackgroundLocationEnabled": false
         }
       ],
+      [
+        "@rnmapbox/maps",
+        {
+          "RNMapboxMapsImpl": "mapbox",
+          "RNMapboxMapsDownloadToken": "sk.eyJ1IjoiYm1kYW5pIiwiYSI6ImNtODJoMm9ucDBzb24yam9ycGZrMmc1dXIifQ.6t-RBQ_bcl6OiN7e7FZuuw"
+        }
+      ],
       "expo-asset"
     ],
     "experiments": {

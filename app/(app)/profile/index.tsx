@@ -12,6 +12,7 @@ import getProfileAction from "@/utils/getProfile"
 import { StyleSheet } from "react-native";
 import CardUser from "@/components/CardUser";
 import capitalize from "@/utils/capitalize";
+import { useRouter } from "expo-router";
 
 export default function ProfileScreen (){
   const [isLoading, setIsLoading] = useState(false)
@@ -19,6 +20,7 @@ export default function ProfileScreen (){
   const [profile, setProfile] = useState<Profile | null>(null)
   const axiosClient = useAxios()
   const { updateError } = useGlobalError();
+  const router = useRouter()
 
   const getProfile = useCallback(async () => {
     if (!session) return
@@ -58,9 +60,8 @@ export default function ProfileScreen (){
               icon="pencil"
               style={styles.editButton}
               accessibilityLabel="Editar perfil"
-            >
-              {/* <EvilIcons  name="pencil" size={24} color="black" style={styles.editIcon} /> */}
-            </IconButton>
+              onPress={() => router.navigate("/profile/editProfile")}
+            />
           </ThemedView>
           <ThemedView style={styles.container}>
             <ThemedView style={styles.containerIconUser}>

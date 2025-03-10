@@ -79,7 +79,7 @@ export default function EditProfileScreen() {
         />
       </ThemedView>
       <Button onPress={handleSubmit(onSubmit)}>Guardar</Button>
-      <Link href="/editPassword">
+      <Link href="profile/editPassword">
           <ThemedText type="link">
             Cambiar contraseña
           </ThemedText>
