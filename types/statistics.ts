@@ -3,8 +3,8 @@ export interface StatisticsResponse {
 }
 
 export interface Statistics {
-  frecuencia_por_fecha:     FrequencyByLocation;
-  frecuencia_por_ubicacion: FrequencyByDate[];
+  frecuencia_por_fecha:     FrequencyByDate;
+  frecuencia_por_ubicacion: FrequencyByLocation[];
   conteo_enfermedades:      DiseaseCount;
 }
 
@@ -24,4 +24,6 @@ export interface FrequencyByLocation {
   ubicacion:  string;
   enfermedad: string;
   cantidad:   number;
+  latitud:    number,
+  longitud:   number
 }
