@@ -20,8 +20,8 @@
     "@formkit/tempo": "^0.1.2",
     "@hookform/resolvers": "^3.9.1",
     "@react-navigation/native": "^7.0.0",
-    "@rnmapbox/maps": "^10.1.37",
     "axios": "^1.7.8",
+    "dotenv": "^16.4.7",
     "expo": "~52.0.36",
     "expo-asset": "~11.0.4",
     "expo-camera": "~16.0.17",
@@ -54,7 +54,8 @@
     "react-native-svg": "15.8.0",
     "react-native-uuid": "^2.0.3",
     "react-native-web": "~0.19.13",
-    "zod": "^3.23.8"
+    "zod": "^3.23.8",
+    "react-native-maps": "1.18.0"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",

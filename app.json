@@ -24,7 +24,12 @@
         "android.permission.CAMERA",
         "android.permission.RECORD_AUDIO"
       ],
-      "package": "com.dani56.ProyectoGrado"
+      "package": "com.dani56.ProyectoGrado",
+      "config": {
+        "googleMaps": {
+          "apiKey": ""
+        }
+      }
     },
     "web": {
       "bundler": "metro",
@@ -56,13 +61,6 @@
         "expo-location",
         {
           "isAndroidBackgroundLocationEnabled": false
-        }
-      ],
-      [
-        "@rnmapbox/maps",
-        {
-          "RNMapboxMapsImpl": "mapbox",
-          "RNMapboxMapsDownloadToken": "sk.eyJ1IjoiYm1kYW5pIiwiYSI6ImNtODJoMm9ucDBzb24yam9ycGZrMmc1dXIifQ.6t-RBQ_bcl6OiN7e7FZuuw"
         }
       ],
       "expo-asset"
