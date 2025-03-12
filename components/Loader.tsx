@@ -7,7 +7,7 @@ import { StyleSheet } from "react-native"
 export default function Loader({text}: {text: string}) {
   return (
     <ThemedView style={styles.loadingContainer}>
-      <ActivityIndicator size='large'/>
+      <ActivityIndicator size='large' color="#3F8D56" />
       <ThemedText type='defaultSemiBold'>{text}</ThemedText>
     </ThemedView>
   )

@@ -16,10 +16,10 @@ import { useRouter } from "expo-router";
 
 export default function ProfileScreen (){
   const [isLoading, setIsLoading] = useState(false)
-  const { session } = useSession()
+  const { session,signOut } = useSession()
   const [profile, setProfile] = useState<Profile | null>(null)
   const axiosClient = useAxios()
-  const { updateError } = useGlobalError();
+  const { updateError } = useGlobalError()
   const router = useRouter()
 
   const getProfile = useCallback(async () => {
@@ -40,6 +40,7 @@ export default function ProfileScreen (){
     if (!profile) {
       await getProfile()
     }
+    console.log("Hola")
   }, [getProfile, profile])
 
   useEffect(() => {
@@ -80,6 +81,7 @@ export default function ProfileScreen (){
               value={profile.email}
               icon="email-outline"
             />
+            <Button onPress={signOut} mode="contained" style={{width: 200, alignSelf: "center"}}>Cerrar sesión</Button>
           </ThemedView>
         </ThemedView>
 

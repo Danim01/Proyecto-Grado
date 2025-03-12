@@ -84,7 +84,8 @@ const styles = StyleSheet.create({
   mainContainer: {
     flex: 1,
     paddingHorizontal: 16,
-    paddingVertical: 32
+    paddingVertical: 32,
+    backgroundColor: '#EDF7F1',
   },
   headerContainer: {
     marginBottom: 32

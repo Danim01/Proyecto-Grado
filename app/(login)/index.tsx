@@ -32,9 +32,9 @@ export default function LoginScreen() {
   return (
     <ThemedView style={styles.mainContainer}>
       <ThemedView style={styles.title}>
-        <ThemedText type="title">Iniciar Sesión</ThemedText>
+        <ThemedText type="title">¡Bienvenido!</ThemedText>
         <ThemedText type="default">
-          Bienvenido, por favor ingrese sus datos para iniciar sesión
+          Por favor ingrese sus datos para iniciar sesión
         </ThemedText>
       </ThemedView>
       <ThemedView style={styles.form}>
@@ -48,6 +48,7 @@ export default function LoginScreen() {
                 onChangeText={field.onChange}
                 placeholder="sofia@gmail.com"
                 inputError={errors.email}
+                autoCapitalize="none"
                 {...field}
               />
             )}

@@ -3,7 +3,10 @@ import { ThemedView } from '@/components/ThemedView';
 import { useSession } from '@/context/authContext';
 import LookupProvider from '@/context/lookupContext';
 import { Redirect, Stack } from 'expo-router';
+import { IconButton } from 'react-native-paper';
 import 'react-native-reanimated';
+import { View } from 'react-native';
+import Header, { RouteType } from '@/components/Header';
 
 
 export default function AppLayout() {
@@ -25,8 +28,15 @@ export default function AppLayout() {
     <LookupProvider>
       <Stack>
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        <Stack.Screen name="analysis" options={{ headerShown: false }} />
         <Stack.Screen name="profile" options={{ headerShown: false }} />
+        <Stack.Screen
+          name="results"
+          options={{
+            header: ({ route, navigation }) => (
+              <Header route={route.name as RouteType} navigation={navigation} />
+            )
+          }}
+        />
       </Stack>
     </LookupProvider>
   );

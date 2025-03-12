@@ -1,7 +1,7 @@
 import FormField from "@/components/FormField";
 import Loader from "@/components/Loader";
+import { View, StyleSheet } from 'react-native'
 import { ThemedText } from "@/components/ThemedText";
-import { ThemedView } from "@/components/ThemedView";
 import { useGlobalError } from "@/context/globalErrorsContext";
 import useAxios from "@/hooks/useAxios";
 import { editPasswordSchema } from "@/schema";
@@ -10,7 +10,7 @@ import verifyOldPassword from "@/utils/verifyOldPassword";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
-import { Button, Icon } from "react-native-paper";
+import { Button, Dialog, Portal, Icon } from "react-native-paper";
 import { z } from "zod";
 
 type EditPasswordType = z.infer<typeof editPasswordSchema>
@@ -38,7 +38,12 @@ export default function EditPasswordScreen() {
     setLoading(true)
     try {
       const response = await verifyOldPassword({ axiosClient, old_password: data.oldPassword })
-      await saveNewPassword({ token: response.token, uidb64: response.uuid, new_password: data.password, confirm_password: data.confirmPassword })
+      await saveNewPassword({
+        token: response.token,
+        uidb64: response.uuid,
+        new_password: data.password,
+        confirm_password: data.confirmPassword
+      })
       setIsFinished(true)
       reset()
     } catch (error: any) {
@@ -49,69 +54,95 @@ export default function EditPasswordScreen() {
   }
 
   return (
-    <ThemedView>
-      {loading &&
+    <View style={{ flex: 1, backgroundColor: '#EDF7F1' }}>
+      {loading ? (
         <Loader text="Validando información"/>
-      }
-      {isFinished &&
-        <>
-          <Icon
-            source="check-circle"
-            size={20}
-            color="green"
-          />
-          <ThemedText>Se actualizo la contraseña correctamente</ThemedText>
-        </>
-      }
-      <ThemedView>
-          <Controller
-            control={control}
-            name="oldPassword"
-            render={({ field }) => (
-              <FormField
-                label="Contraseña antigua"
-                onChangeText={field.onChange}
-                isPassword
-                placeholder="••••••••"
-                inputError={errors.password}
-                {...field}
+      ) : (
+        <View style={styles.container}>
+          <View style={styles.controllers}>
+            <Controller
+              control={control}
+              name="oldPassword"
+              render={({ field }) => (
+                <FormField
+                  label="Contraseña antigua"
+                  onChangeText={field.onChange}
+                  isPassword
+                  placeholder="••••••••"
+                  inputError={errors.password}
+                  {...field}
+                />
+              )}
+            />
+            <Controller
+              control={control}
+              name="password"
+              render={({ field }) => (
+                <FormField
+                  label="Contraseña nueva"
+                  onChangeText={field.onChange}
+                  isPassword
+                  placeholder="••••••••"
+                  inputError={errors.password}
+                  {...field}
+                />
+              )}
+            />
+            <Controller
+              control={control}
+              name="confirmPassword"
+              render={({ field }) => (
+                <FormField
+                  label="Confirmar Contraseña nueva"
+                  onChangeText={field.onChange}
+                  isPassword
+                  placeholder="••••••••"
+                  inputError={errors.confirmPassword}
+                  {...field}
+                />
+              )}
+            />
+          </View>
+          <Button
+            mode="contained-tonal"
+            onPress={handleSubmit(onSubmit)}
+            style={{ width: 200, alignSelf: "center" }}
+            icon="check"
+          >
+            Guardar
+          </Button>
+        </View>
+      )}
+      {(isFinished) && (
+        <Portal>
+          <Dialog visible={isFinished} onDismiss={() => setIsFinished(false)}>
+            <Dialog.Title accessibilityLabel="Actualización exitosa">
+              <Icon
+                source="check-circle"
+                size={32}
+                color="green"
               />
-            )}
-          />
-        </ThemedView>
-      <ThemedView>
-          <Controller
-            control={control}
-            name="password"
-            render={({ field }) => (
-              <FormField
-                label="Contraseña nueva"
-                onChangeText={field.onChange}
-                isPassword
-                placeholder="••••••••"
-                inputError={errors.password}
-                {...field}
-              />
-            )}
-          />
-        </ThemedView>
-        <ThemedView>
-          <Controller
-            control={control}
-            name="confirmPassword"
-            render={({ field }) => (
-              <FormField
-                label="Confirmar Contraseña nueva"
-                onChangeText={field.onChange}
-                isPassword
-                placeholder="••••••••"
-                inputError={errors.confirmPassword}
-                {...field}
-              />
-            )}
-          />
-        </ThemedView>
-        <Button onPress={handleSubmit(onSubmit)} disabled={loading}>Guardar</Button>
-    </ThemedView>
+            </Dialog.Title>
+            <Dialog.Content>
+              <ThemedText>La contraseña se actualizó correctamente</ThemedText>
+            </Dialog.Content>
+            <Dialog.Actions>
+              <Button onPress={() => setIsFinished(false)}>Aceptar</Button>
+            </Dialog.Actions>
+          </Dialog>
+        </Portal>
+      )}
+    </View>
   )
 }
+
+const styles = StyleSheet.create({
+  container: {
+    paddingVertical: 32,
+    paddingHorizontal: 16,
+    gap: 48
+  },
+  controllers: {
+    gap: 16
+  }
+})

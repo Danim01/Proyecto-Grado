@@ -83,8 +83,10 @@ function NewPasswordScreen() {
             size={20}
             color='green'
           />
-          <ThemedText type='defaultSemiBold'>A tu correo se mando un link para restablecer la contraseña</ThemedText>
-      </>
+          <ThemedText type='defaultSemiBold'>
+            A tu correo se mando un link para restablecer la contraseña
+          </ThemedText>
+        </>
       )}
       <ThemedText>Ingrese su contraseña nueva</ThemedText>
       <ThemedView>

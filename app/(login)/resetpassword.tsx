@@ -1,14 +1,13 @@
 import FormField from '@/components/FormField'
 import Loader from '@/components/Loader'
 import { ThemedText } from '@/components/ThemedText'
-import { ThemedView } from '@/components/ThemedView'
 import { useGlobalError } from '@/context/globalErrorsContext'
 import { resetPasswordSchema } from '@/schema'
 import sendEmail from '@/utils/sendEmail'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useState } from 'react'
 import { Controller, useForm } from "react-hook-form"
-import { StyleSheet } from "react-native"
+import { StyleSheet, View } from "react-native"
 import { Button, Icon } from "react-native-paper"
 import { z } from 'zod'
 
@@ -46,7 +45,7 @@ export default function ResetPasswordScreen () {
   }
 
   return (
-    <ThemedView style={styles.mainContainer}>
+    <View style={styles.mainContainer}>
       {loading &&
         <Loader text='Enviando correo'/>
       }
@@ -60,8 +59,8 @@ export default function ResetPasswordScreen () {
           <ThemedText type='defaultSemiBold'>A tu correo se mando un link para restablecer la contraseña</ThemedText>
         </>
       )}
-      <ThemedText type='title'>Recuperar Contraseña</ThemedText>
-      <ThemedView>
+      <ThemedText type='defaultSemiBold'>Ingresa tu correo para recuperar la contraseña</ThemedText>
+      <View>
         <Controller
           control={control}
           render={({ field }) => (
@@ -70,19 +69,20 @@ export default function ResetPasswordScreen () {
               onChangeText={field.onChange}
               placeholder="sofia@gmail.com"
               inputError={errors.email}
+              autoCapitalize="none"
               {...field}
             />
           )}
           name="email"
           rules={{ required: "Este campo es requerido" }}
         />
-      </ThemedView>
-      <ThemedView>
+      </View>
+      <View>
         <Button onPress={handleSubmit(onSubmit)} mode="contained-tonal">
           <ThemedText>Recuperar Contraseña</ThemedText>
         </Button>
-      </ThemedView>
-    </ThemedView>
+      </View>
+    </View>
   )
 }
 

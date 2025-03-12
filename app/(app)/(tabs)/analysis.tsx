@@ -1,8 +1,7 @@
 import { CameraPictureOptions, CameraView, useCameraPermissions } from 'expo-camera';
-import { useRef } from 'react';
-import { StyleSheet, TouchableOpacity } from 'react-native';
-import { Button } from 'react-native-paper'
-import Feather from '@expo/vector-icons/Feather';
+import { useRef, useState } from 'react';
+import { StyleSheet, View } from 'react-native';
+import { Button, IconButton } from 'react-native-paper'
 import { useLookup } from '@/context/lookupContext';
 import { useRouter } from 'expo-router';
 import { ThemedText } from '@/components/ThemedText';
@@ -15,6 +14,7 @@ import Loader from '@/components/Loader';
 
 export default function AnalysisScreen() {
   const camera = useRef<CameraView>(null)
+  const [isTakingPhoto, setIsTakingPhoto] = useState(false)
   const [permission, requestPermission] = useCameraPermissions()
   const { changeLastLookup, generateLookup, loading, loadingMessage } = useLookup()
   const router = useRouter()
@@ -43,6 +43,7 @@ export default function AnalysisScreen() {
 
   async function takePhoto () {
     if (!camera.current) return
+    setIsTakingPhoto(true)
 
     const cameraOptions: CameraPictureOptions = {
       imageType: "jpg",
@@ -55,6 +56,7 @@ export default function AnalysisScreen() {
       // Poner un mensaje de error cuando la foto sale mal
       if (!photo) {
         updateError("Algo salio mal, por favor tome otra foto")
+        setIsTakingPhoto(false)
         return
       }
 
@@ -67,6 +69,8 @@ export default function AnalysisScreen() {
     } catch (error: any) {
       console.error(error.message)
       updateError("Algo salio mal, por favor tome otra foto")
+    } finally {
+      setIsTakingPhoto(false)
     }
   }
 
@@ -107,14 +111,25 @@ export default function AnalysisScreen() {
         <Loader text={loadingMessage}/>
       }
       <CameraView style={styles.camera} ref={camera}>
-        <ThemedView style={styles.buttonContainer}>
-          <TouchableOpacity style={styles.button} onPress={takePhoto}>
-            <Feather name="search" size={36} color="black" />
-          </TouchableOpacity>
-          <Button onPress={pickImage}>
-            <Feather name="image" size={24} color="white" />
-          </Button>
-        </ThemedView>
+        <View style={styles.controlsContainer}>
+          <View style={styles.backdrop} />
+          <View style={styles.buttonsContainer}>
+            <IconButton
+              style={styles.analysisButton}
+              onPress={takePhoto}
+              icon="magnify-scan"
+              size={32}
+              iconColor="#1b1b1b"
+              disabled={isTakingPhoto}
+            />
+            <IconButton
+              style={styles.pickImageButton}
+              onPress={pickImage}
+              icon="image-outline"
+              iconColor="white"
+            />
+          </View>
+        </View>
       </CameraView>
     </ThemedView>
   );
@@ -134,27 +149,35 @@ const styles = StyleSheet.create({
     flex: 1,
     height: '100%'
   },
-  buttonContainer: {
+  controlsContainer: {
+    position: "absolute",
+    bottom: 0,
+    width: "100%"
+  },
+  backdrop: {
     position: 'absolute',
     bottom: 0,
-    height: 56,
-    flexDirection: 'row',
+    height: 54,
+    width: "100%",
     backgroundColor: 'rgba(0, 0, 0, 0.3)',
-    width: '100%'
   },
-  button: {
-    position: 'absolute',
-    left: '50%',
-    top: 0,
+  buttonsContainer: {
+    position: "relative",
+  },
+  pickImageButton: {
+    overflow: 'visible',
+    marginLeft: 24,
+  },
+  analysisButton: {
+    position: "absolute",
+    left: "50%",
     width: 64,
     height: 64,
     marginLeft: -32,
-    marginTop: -32,
-    backgroundColor: 'white',
+    marginTop: -27,
+    backgroundColor: "white",
     borderRadius: 9999,
-    overflow: 'visible',
-    justifyContent: 'center',
-    alignItems: 'center'
+
   },
   text: {
     fontSize: 24,

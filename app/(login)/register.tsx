@@ -55,7 +55,7 @@ export default function RegisterScreen() {
   return (
     <ThemedView style={styles.mainContainer}>
       <ThemedView style={styles.title}>
-        <ThemedText type="title">Registrarse</ThemedText>
+        <ThemedText type="title">¡Únete a Eva!</ThemedText>
         <ThemedText type="default">
           Ingresa tus datos para completar tu registro
         </ThemedText>
@@ -91,6 +91,7 @@ export default function RegisterScreen() {
                 onChangeText={field.onChange}
                 placeholder="sofia@gmail.com"
                 inputError={errors.email}
+                autoCapitalize="none"
                 {...field}
               />
             )}
@@ -137,7 +138,7 @@ export default function RegisterScreen() {
       <ThemedView>
         <ThemedText style={styles.textBottom}>
           ¿Ya tienes una cuenta?
-          <Link href="/"> Iniciar Sesión</Link>
+          <Link href="/" style={{ fontWeight: "semibold" }}> Iniciar Sesión</Link>
         </ThemedText>
       </ThemedView>
     </ThemedView>

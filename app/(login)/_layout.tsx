@@ -1,16 +1,16 @@
-import { ThemedText } from "@/components/ThemedText"
-import { ThemedView } from "@/components/ThemedView"
+import Loader from "@/components/Loader"
 import { useSession } from "@/context/authContext"
 import { Redirect, Stack } from "expo-router"
+import { View } from 'react-native'
 
 export default function LoginLayout() {
   const { session, isLoading } = useSession()
 
   if (isLoading) {
     return (
-      <ThemedView>
-        <ThemedText type='title'>Cargando...</ThemedText>
-      </ThemedView>
+      <View style={{ flex: 1, backgroundColor: '#EDF7F1' }}>
+        <Loader text="Iniciando sesión..." />
+      </View>
     )
   }
 
@@ -20,19 +20,18 @@ export default function LoginLayout() {
 
   return (
     <Stack screenOptions={{
-      headerTitle: "",
       headerStyle: {
-        backgroundColor: '#1b1b1b',
+        backgroundColor: 'white',
       },
-      headerTintColor: '#fff',
+      headerTintColor: '#1b1b1b',
       headerTitleStyle: {
         fontWeight: 'bold',
       },
     }}>
-      <Stack.Screen name="index" />
-      <Stack.Screen name="register" />
-      <Stack.Screen name="resetpassword" />
-      <Stack.Screen name="password/reset/verify" />
+      <Stack.Screen name="index" options={{ headerTitle: "Iniciar Sesión" }} />
+      <Stack.Screen name="register" options={{ headerTitle: "Registrarse" }}  />
+      <Stack.Screen name="resetpassword" options={{ headerTitle: "Recuperar Contraseña" }}  />
+      <Stack.Screen name="password/reset/verify" options={{ headerShown: false }} />
     </Stack>
   )
 }

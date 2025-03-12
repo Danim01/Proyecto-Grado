@@ -1,7 +1,6 @@
 import FormField from "@/components/FormField";
 import Loader from "@/components/Loader";
 import { ThemedText } from "@/components/ThemedText";
-import { ThemedView } from "@/components/ThemedView";
 import { useGlobalError } from "@/context/globalErrorsContext";
 import useAxios from "@/hooks/useAxios";
 import { editProfileSchema } from "@/schema";
@@ -11,7 +10,8 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Link } from "expo-router";
 import { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
-import { Button, Icon } from "react-native-paper";
+import { Button, Dialog, Portal, Icon } from "react-native-paper";
+import { View, StyleSheet } from 'react-native'
 import { z } from "zod";
 
 type EditProfileType = z.infer<typeof editProfileSchema>
@@ -36,7 +36,7 @@ export default function EditProfileScreen() {
   const onSubmit = async (data: EditProfileType) => {
     setLoading(true)
     try {
-      const response = await editProfile({ axiosClient, name: data.name })
+      await editProfile({ axiosClient, name: data.name })
       reset()
       setIsFinished(true)
     } catch (error: any) {
@@ -47,43 +47,70 @@ export default function EditProfileScreen() {
     }
   }
   return (
-    <ThemedView>
-      {loading &&
+    <View style={{ flex: 1, backgroundColor: '#EDF7F1', paddingHorizontal: 16, paddingVertical: 32 }}>
+      {loading ? (
         <Loader text="Validando información"/>
+        ) : (
+          <View style={styles.container}>
+            <FontAwesome name="user-circle" size={80} color="black" />
+            <View style={{ width: "100%", gap: 48 }}>
+              <Controller
+                control={control}
+                name="name"
+                render={({ field }) => (
+                  <FormField
+                    label="Nombre"
+                    placeholder="Sara"
+                    onChangeText={field.onChange}
+                    inputError={errors.name}
+                    {...field}
+                  />
+                )}
+              />
+              <Button
+                mode="contained-tonal"
+                onPress={handleSubmit(onSubmit)}
+                style={{ width: 200, alignSelf: "center" }}
+                icon="check"
+              >
+                Guardar
+              </Button>
+            </View>
+            <Link href="/profile/editPassword">
+                <ThemedText type="link" style={{ fontWeight: "regular", fontFamily: "Chivo" }}>
+                  Cambiar contraseña
+                </ThemedText>
+            </Link>
+          </View>
+        )
       }
-      {isFinished &&
-        <>
-          <Icon
-            source="check-circle"
-            size={20}
-            color="green"
-          />
-          <ThemedText type="defaultSemiBold">La información se guardo exitosamente</ThemedText>
-        </>
-
-      }
-      <FontAwesome name="user-circle" size={80} color="black" />
-      <ThemedView>
-        <Controller
-          control={control}
-          name="name"
-          render={({ field }) => (
-            <FormField
-              label="Nombre"
-              placeholder="Sara"
-              onChangeText={field.onChange}
-              inputError={errors.name}
-              {...field}
-            />
-          )}
-        />
-      </ThemedView>
-      <Button onPress={handleSubmit(onSubmit)}>Guardar</Button>
-      <Link href="profile/editPassword">
-          <ThemedText type="link">
-            Cambiar contraseña
-          </ThemedText>
-      </Link>
-    </ThemedView>
+      {isFinished && (
+        <Portal>
+          <Dialog visible={isFinished} onDismiss={() => setIsFinished(false)}>
+            <Dialog.Title accessibilityLabel="Actualización exitosa">
+              <Icon
+                source="check-circle"
+                size={32}
+                color="green"
+              />
+            </Dialog.Title>
+            <Dialog.Content>
+              <ThemedText>La información se guardo exitosamente</ThemedText>
+            </Dialog.Content>
+            <Dialog.Actions>
+              <Button onPress={() => setIsFinished(false)}>Aceptar</Button>
+            </Dialog.Actions>
+          </Dialog>
+        </Portal>
+      )}
+    </View>
   )
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    alignItems: "center",
+    gap: 16
+  }
+})

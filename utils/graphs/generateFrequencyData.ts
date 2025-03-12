@@ -1,9 +1,8 @@
 import { DiseaseCount } from "@/types/statistics";
+import capitalize from "just-capitalize"
 
 function generateFrequencyData(data: DiseaseCount) {
-  //Crea un array de objetos con la información de la cantidad
-  // de busquedas por enfermedad
-  const labelData = Object.keys(data)
+  const labelData = Object.keys(data).map((label) => capitalize(label))
   const valueData = Object.values(data).map(Number)
 
   const graphData = {
@@ -16,20 +15,6 @@ function generateFrequencyData(data: DiseaseCount) {
   }
 
   return graphData
-  /*
-    data = {
-      healthy: 19,
-      powdery: 123,
-      rust: 12,
-    }
-
-    const graphData = Object.entries(data)
-    console.log(graphData)
-
-    > [["healthy", 19], ["powdery", 123], ["rust", 12]]
-
-    [{ illness: "healthy", count: 19 }, {...}, {...}]
-  */
 }
 
 export default generateFrequencyData

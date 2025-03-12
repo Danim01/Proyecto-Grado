@@ -1,12 +1,12 @@
 import { LookupCard } from "@/components/LookupCard"
-import { ThemedView } from "@/components/ThemedView"
+import { ThemedText } from "@/components/ThemedText"
 import { useLookup } from "@/context/lookupContext"
 import { useRef } from "react"
-import { ScrollView } from "react-native"
+import { ScrollView, View, StyleSheet } from "react-native"
 import { Button } from "react-native-paper"
 
 export default function HistoryScreen() {
-  const { paginatedLookups, getPaginatedLookups } = useLookup()
+  const { paginatedLookups, getPaginatedLookups, loading } = useLookup()
   const scrollViewRef = useRef<ScrollView | null>(null)
 
   const handlePageChange = (url: string | null) => {
@@ -21,7 +21,12 @@ export default function HistoryScreen() {
   }
   return (
     <ScrollView ref={scrollViewRef}>
-      <ThemedView>
+      <View style={styles.container}>
+        {
+          loading && (
+            <ThemedText type="defaultSemiBold" style={{ textAlign: "center" }}>Cargando...</ThemedText>
+          )
+        }
         {
           paginatedLookups.results.map((lookup) => {
             return (
@@ -29,19 +34,37 @@ export default function HistoryScreen() {
             )
           })
         }
-        <Button
-          onPress={() => handlePageChange(paginatedLookups.previous)}
-          disabled={paginatedLookups.previous === null}
-        >
-          Anterior
-        </Button>
-        <Button
-          onPress={() => handlePageChange(paginatedLookups.next)}
-          disabled={paginatedLookups.next === null}
-        >
-          Siguiente
-        </Button>
-      </ThemedView>
+        <View style={styles.buttonsContainer}>
+          <Button
+            onPress={() => handlePageChange(paginatedLookups.previous)}
+            disabled={paginatedLookups.previous === null}
+            mode="contained-tonal"
+          >
+            Anterior
+          </Button>
+          <Button
+            onPress={() => handlePageChange(paginatedLookups.next)}
+            disabled={paginatedLookups.next === null}
+            mode="contained-tonal"
+          >
+            Siguiente
+          </Button>
+        </View>
+      </View>
     </ScrollView>
   )
 }
+
+const styles = StyleSheet.create({
+  container: {
+    backgroundColor: '#EDF7F1',
+    padding: 16,
+    gap: 24,
+    flex: 1,
+  },
+  buttonsContainer: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    gap: 8
+  }
+})

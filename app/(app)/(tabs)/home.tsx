@@ -1,13 +1,20 @@
-import { Card } from '@/components/Card'
-import { ThemedView } from '@/components/ThemedView'
+import MenuCard from '@/components/MenuCard'
+import { ScrollView } from 'react-native'
 
 export default function HomeScreen() {
   return (
-    <ThemedView>
-      <Card title='Análisis' link='/analysis' />
-      <Card title='Historial' link='/history' />
-      <Card title='Perfil' link='/profile' />
-      <Card title='Estadísticas' link='/statistics' />
-    </ThemedView>
+    <ScrollView
+      contentContainerStyle={{
+        padding: 16,
+        justifyContent: "space-between",
+        gap: 16,
+        flex: 1,
+        backgroundColor: '#EDF7F1',
+      }}
+    >
+      <MenuCard title='Análisis' link='/analysis' icon='analysis' />
+      <MenuCard title='Historial' link='/history' icon='history' />
+      <MenuCard title='Estadísticas' link='/statistics' icon='statistics' />
+    </ScrollView>
   )
 }
