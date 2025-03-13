@@ -1,7 +1,7 @@
 import FormField from "@/components/FormField";
 import Loader from "@/components/Loader";
 import { ThemedText } from "@/components/ThemedText";
-import { ThemedView } from "@/components/ThemedView";
+import { View } from "react-native";
 import { useGlobalError } from "@/context/globalErrorsContext";
 import { forgetPasswordSchema } from "@/schema";
 import saveNewPassword from "@/utils/saveNewPassword";
@@ -9,7 +9,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Redirect, useLocalSearchParams, useRouter } from "expo-router";
 import { useEffect, useRef, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
-import { Button, Icon } from "react-native-paper";
+import { Button, Dialog, Portal, Icon } from "react-native-paper";
 import { z } from "zod";
 
 type FormType = z.infer<typeof forgetPasswordSchema>
@@ -72,57 +72,83 @@ function NewPasswordScreen() {
 
 
   return (
-    <ThemedView>
-      {loading &&
+    <View style={{ flex: 1 }}>
+      {loading ? (
         <Loader text="Guardando nueva contraseña"/>
-      }
-      {isFinished && (
-        <>
-          <Icon
-            source="check-circle"
-            size={20}
-            color='green'
-          />
-          <ThemedText type='defaultSemiBold'>
-            A tu correo se mando un link para restablecer la contraseña
+      ) : (
+        <View
+          style={{
+            padding: 16,
+            paddingTop: 48,
+            flex: 1,
+            gap: 16
+          }}
+        >
+          <ThemedText type="subtitle">
+            Ingrese su contraseña nueva
           </ThemedText>
-        </>
+          <View>
+            <Controller
+              control={control}
+              name="password"
+              render={({ field }) => (
+                <FormField
+                  label="Contraseña"
+                  onChangeText={field.onChange}
+                  isPassword
+                  placeholder="••••••••"
+                  inputError={errors.password}
+                  {...field}
+                />
+              )}
+            />
+          </View>
+          <View>
+            <Controller
+              control={control}
+              name="confirmPassword"
+              render={({ field }) => (
+                <FormField
+                  label="Confirmar Contraseña"
+                  onChangeText={field.onChange}
+                  isPassword
+                  placeholder="••••••••"
+                  inputError={errors.confirmPassword}
+                  {...field}
+                />
+              )}
+            />
+          </View>
+          <Button
+            mode="contained-tonal"
+            onPress={handleSubmit(onSubmit)}
+            style={{ width: 200, alignSelf: "center" }}
+            icon="check"
+          >
+            Guardar
+          </Button>
+        </View>
       )}
-      <ThemedText>Ingrese su contraseña nueva</ThemedText>
-      <ThemedView>
-          <Controller
-            control={control}
-            name="password"
-            render={({ field }) => (
-              <FormField
-                label="Contraseña"
-                onChangeText={field.onChange}
-                isPassword
-                placeholder="••••••••"
-                inputError={errors.password}
-                {...field}
+      {isFinished && (
+        <Portal>
+          <Dialog visible={isFinished} onDismiss={() => setIsFinished(false)}>
+            <Dialog.Title accessibilityLabel="Actualización exitosa">
+              <Icon
+                source="check-circle"
+                size={32}
+                color="green"
               />
-            )}
-          />
-        </ThemedView>
-        <ThemedView>
-          <Controller
-            control={control}
-            name="confirmPassword"
-            render={({ field }) => (
-              <FormField
-                label="Confirmar Contraseña"
-                onChangeText={field.onChange}
-                isPassword
-                placeholder="••••••••"
-                inputError={errors.confirmPassword}
-                {...field}
-              />
-            )}
-          />
-        </ThemedView>
-        <Button onPress={handleSubmit(onSubmit)} disabled={loading}>Guardar</Button>
-    </ThemedView>
+            </Dialog.Title>
+            <Dialog.Content>
+              <ThemedText>La información se guardo exitosamente</ThemedText>
+            </Dialog.Content>
+            <Dialog.Actions>
+              <Button onPress={() => setIsFinished(false)}>Aceptar</Button>
+            </Dialog.Actions>
+          </Dialog>
+        </Portal>
+      )}
+    </View>
   )
 }
 

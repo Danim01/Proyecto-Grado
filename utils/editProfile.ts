@@ -12,8 +12,6 @@ async function editProfile({ axiosClient, ...profileData }: Props) {
     const response = await axiosClient.patch(`${baseURL}usuario/detalle/`, {
       ...profileData
     })
-
-    console.log(response.data)
   } catch (error: any) {
     if (error instanceof AxiosError) {
       const message = extractErrors(error)

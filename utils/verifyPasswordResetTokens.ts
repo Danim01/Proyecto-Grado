@@ -10,10 +10,8 @@ interface Params {
 async function verifyPasswordResetTokens({ token, uidb64 }: Params) {
   try {
     const response = await axios.get(`${baseURL}usuario/contrasena/restablecer/confirmar/${uidb64}/${token}/`,)
-    console.log(response.data)
     return response.data
   } catch (error: any) {
-    console.log(error)
     if (error instanceof AxiosError) {
       const message = extractErrors(error)
       throw new Error(message)

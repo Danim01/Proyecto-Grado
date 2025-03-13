@@ -23,6 +23,7 @@ async function uploadImage({ uri, tokenSas }: Params) {
     const file = await response.blob()
     // Se crea el identificador unido de la imagen
     const fileId = uuid.v4()
+    // jpg es uno de los formatos que recibe la IA
     const fileFormat = 'jpg'
     const fileName = `${fileId}.${fileFormat}`
 

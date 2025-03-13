@@ -1,9 +1,7 @@
 import Loader from "@/components/Loader";
 import { ThemedView } from "@/components/ThemedView";
 import { useGlobalError } from "@/context/globalErrorsContext";
-import { extractErrors } from "@/utils/extractErrors";
 import verifyPasswordResetTokens from "@/utils/verifyPasswordResetTokens";
-import { AxiosError } from "axios";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { useCallback, useEffect, useRef, useState } from "react";
 
@@ -22,9 +20,11 @@ function VerifyPasswordScreen() {
       return
     }
     try {
-      const { message } = await verifyPasswordResetTokens({token, uidb64})
-      setLoaderMessage(message)
+      setLoaderMessage("Validando información...")
 
+      await verifyPasswordResetTokens({token, uidb64})
+
+      setLoaderMessage("Información validada correctamente")
       const timeOutId = setTimeout(() => {
         router.navigate(`/password/reset?token=${token}&uidb64=${uidb64}`)
       }, 5000)

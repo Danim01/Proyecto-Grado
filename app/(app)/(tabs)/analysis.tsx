@@ -76,20 +76,14 @@ export default function AnalysisScreen() {
 
 
   const pickImage = async () => {
-    // No permissions request is necessary for launching the image library
+    // Abrir la galería
     const result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ['images', 'videos'],
+      mediaTypes: ['images'],
       allowsEditing: true,
-      //aspect: [4, 3],
       quality: 1,
     });
 
-    console.log(result);
-
-    if (result.canceled) {
-      updateError("Algo salio mal, por favor tome otra foto")
-      return
-    }
+    if (result.canceled) return
 
     const uri = result.assets[0].uri
     const newLookup = await generateLookup(uri)
@@ -99,7 +93,6 @@ export default function AnalysisScreen() {
     }
 
     changeLastLookup(newLookup)
-    // Verificar si búsqueda siempre retorna algo
     router.navigate("/results")
 
   };

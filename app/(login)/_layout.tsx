@@ -1,18 +1,8 @@
-import Loader from "@/components/Loader"
 import { useSession } from "@/context/authContext"
 import { Redirect, Stack } from "expo-router"
-import { View } from 'react-native'
 
 export default function LoginLayout() {
-  const { session, isLoading } = useSession()
-
-  if (isLoading) {
-    return (
-      <View style={{ flex: 1, backgroundColor: '#EDF7F1' }}>
-        <Loader text="Iniciando sesión..." />
-      </View>
-    )
-  }
+  const { session } = useSession()
 
   if (session?.refresh && session.access) {
     return <Redirect href="/home" />
@@ -31,7 +21,7 @@ export default function LoginLayout() {
       <Stack.Screen name="index" options={{ headerTitle: "Iniciar Sesión" }} />
       <Stack.Screen name="register" options={{ headerTitle: "Registrarse" }}  />
       <Stack.Screen name="resetpassword" options={{ headerTitle: "Recuperar Contraseña" }}  />
-      <Stack.Screen name="password/reset/verify" options={{ headerShown: false }} />
+      <Stack.Screen name="password" options={{ headerShown: false }}  />
     </Stack>
   )
 }

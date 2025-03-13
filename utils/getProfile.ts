@@ -4,7 +4,6 @@ import { extractErrors } from "./extractErrors"
 
 async function getProfile(axiosClient: AxiosInstance) {
   try {
-    console.log({axiosClient})
     const response = await axiosClient.get<Profile>('usuario/perfil/')
 
     return response.data

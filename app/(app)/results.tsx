@@ -1,17 +1,12 @@
 import { ThemedText } from '@/components/ThemedText'
 import { ThemedView } from '@/components/ThemedView'
 import { useLookup } from '@/context/lookupContext'
-import { useEffect } from 'react'
 import { Image, View, StyleSheet, ScrollView } from 'react-native'
 import React from 'react'
 import { ExternalPathString, Link } from 'expo-router'
 
 export default function ResultsScreen() {
   const { lastLookup } = useLookup()
-
-  useEffect(() => {
-    console.log(lastLookup)
-  }, [lastLookup])
 
   let treatmentsHeader = ""
 
@@ -56,7 +51,6 @@ export default function ResultsScreen() {
                 {
                   lastLookup.enfermedad.tratamientos.map((treatment, i) => {
                     const id = `${lastLookup.id}_${lastLookup.enfermedad.nombre}_${i} `
-                    console.log(treatment)
                     return (
                       <View key={id}>
                         <ThemedText type='default'>{treatment.descripcion}</ThemedText>

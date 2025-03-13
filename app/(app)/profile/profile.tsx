@@ -24,7 +24,7 @@ export default function ProfileScreen (){
 
   const getProfile = useCallback(async () => {
     if (!session) return
-    console.log(session)
+
     setIsLoading(true)
     try {
       const newProfile = await getProfileAction(axiosClient)
@@ -40,7 +40,7 @@ export default function ProfileScreen (){
     if (!profile) {
       await getProfile()
     }
-    console.log("Hola")
+
   }, [getProfile, profile])
 
   useEffect(() => {

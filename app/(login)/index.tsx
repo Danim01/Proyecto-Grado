@@ -1,14 +1,14 @@
 import { Link } from "expo-router"
 import { Controller, useForm } from "react-hook-form"
-import { StyleSheet } from "react-native"
+import { StyleSheet, View } from "react-native"
 import { Button } from "react-native-paper"
 import { ThemedText } from '@/components/ThemedText'
-import { ThemedView } from '@/components/ThemedView'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { loginSchema } from "@/schema"
 import FormField from "@/components/FormField"
 import { z } from "zod"
 import { useSession } from "@/context/authContext"
+import Loader from "@/components/Loader"
 
 export default function LoginScreen() {
   const {
@@ -23,71 +23,80 @@ export default function LoginScreen() {
     }
   })
 
-  const { signIn } = useSession()
+  const { signIn, isLoading } = useSession()
 
   const onSubmit = (data: any) => {
     signIn(data)
   }
 
   return (
-    <ThemedView style={styles.mainContainer}>
-      <ThemedView style={styles.title}>
-        <ThemedText type="title">¡Bienvenido!</ThemedText>
-        <ThemedText type="default">
-          Por favor ingrese sus datos para iniciar sesión
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.form}>
-        <ThemedView>
-          <Controller
-            control={control}
-            name="email"
-            render={({ field }) => (
-              <FormField
-                label="Email"
-                onChangeText={field.onChange}
-                placeholder="sofia@gmail.com"
-                inputError={errors.email}
-                autoCapitalize="none"
-                {...field}
+    <View style={{ flex: 1 }}>
+      {isLoading ? (
+        <View style={{ flex: 1, backgroundColor: '#EDF7F1' }}>
+          <Loader text="Iniciando sesión..." />
+        </View>
+      ) : (
+        <View style={styles.mainContainer}>
+          <View style={styles.title}>
+            <ThemedText type="title">¡Bienvenido!</ThemedText>
+            <ThemedText type="default">
+              Por favor ingrese sus datos para iniciar sesión
+            </ThemedText>
+          </View>
+          <View style={styles.form}>
+            <View>
+              <Controller
+                control={control}
+                name="email"
+                render={({ field }) => (
+                  <FormField
+                    label="Email"
+                    onChangeText={field.onChange}
+                    placeholder="sofia@gmail.com"
+                    inputError={errors.email}
+                    autoCapitalize="none"
+                    {...field}
+                  />
+                )}
               />
-            )}
-          />
-        </ThemedView>
-        <ThemedView>
-          <Controller
-            control={control}
-            name="password"
-            render={({ field }) => (
-              <FormField
-                label="Contraseña"
-                onChangeText={field.onChange}
-                isPassword
-                placeholder="••••••••"
-                inputError={errors.password}
-                {...field}
+            </View>
+            <View>
+              <Controller
+                control={control}
+                name="password"
+                render={({ field }) => (
+                  <FormField
+                    label="Contraseña"
+                    onChangeText={field.onChange}
+                    isPassword
+                    placeholder="••••••••"
+                    inputError={errors.password}
+                    {...field}
+                  />
+                )}
               />
-            )}
-          />
-        </ThemedView>
-        <ThemedView>
-          <ThemedText>
-            <Link href="/resetpassword">Recuperar contraseña</Link>
-          </ThemedText>
-        </ThemedView>
-        <ThemedView>
-          <Button onPress={handleSubmit(onSubmit)} mode="contained-tonal">
-            <ThemedText>Iniciar Sesión</ThemedText>
-          </Button>
-        </ThemedView>
-      </ThemedView>
-      <ThemedView>
-        <ThemedText style={styles.textBottom}>
-          ¿No estas registrado?
-          <Link href="/register"> Registrarse</Link>
-        </ThemedText>
-      </ThemedView>
-    </ThemedView>
+            </View>
+            <View>
+              <ThemedText>
+                <Link href="/resetpassword">Recuperar contraseña</Link>
+              </ThemedText>
+            </View>
+            <View>
+              <Button onPress={handleSubmit(onSubmit)} mode="contained-tonal">
+                <ThemedText>Iniciar Sesión</ThemedText>
+              </Button>
+            </View>
+          </View>
+          <View>
+            <ThemedText style={styles.textBottom}>
+              ¿No estas registrado?
+              <Link href="/register"> Registrarse</Link>
+            </ThemedText>
+          </View>
+        </View>
+
+      )}
+    </View>
   )
 }
 

@@ -8,7 +8,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { useState } from 'react'
 import { Controller, useForm } from "react-hook-form"
 import { StyleSheet, View } from "react-native"
-import { Button, Icon } from "react-native-paper"
+import { Button, Dialog, Portal, Icon } from "react-native-paper"
 import { z } from 'zod'
 
 type FormDataType = z.infer<typeof resetPasswordSchema>
@@ -45,43 +45,56 @@ export default function ResetPasswordScreen () {
   }
 
   return (
-    <View style={styles.mainContainer}>
-      {loading &&
+    <View style={{ flex: 1 }}>
+      {loading ? (
         <Loader text='Enviando correo'/>
+      ) : (
+        <View style={styles.mainContainer}>
+          <ThemedText type='defaultSemiBold'>Ingresa tu correo para recuperar la contraseña</ThemedText>
+          <View>
+            <Controller
+              control={control}
+              render={({ field }) => (
+                <FormField
+                  label="Correo"
+                  onChangeText={field.onChange}
+                  placeholder="sofia@gmail.com"
+                  inputError={errors.email}
+                  autoCapitalize="none"
+                  {...field}
+                />
+              )}
+              name="email"
+              rules={{ required: "Este campo es requerido" }}
+            />
+          </View>
+          <View>
+            <Button onPress={handleSubmit(onSubmit)} mode="contained-tonal">
+              <ThemedText>Recuperar Contraseña</ThemedText>
+            </Button>
+          </View>
+        </View>
+      )
       }
       {isFinished && (
-        <>
-          <Icon
-            source="check-circle"
-            size={20}
-            color='green'
-          />
-          <ThemedText type='defaultSemiBold'>A tu correo se mando un link para restablecer la contraseña</ThemedText>
-        </>
+        <Portal>
+          <Dialog visible={isFinished} onDismiss={() => setIsFinished(false)}>
+            <Dialog.Title accessibilityLabel="Actualización exitosa">
+              <Icon
+                source="check-circle"
+                size={32}
+                color="green"
+              />
+            </Dialog.Title>
+            <Dialog.Content>
+              <ThemedText>La información se guardo exitosamente</ThemedText>
+            </Dialog.Content>
+            <Dialog.Actions>
+              <Button onPress={() => setIsFinished(false)}>Aceptar</Button>
+            </Dialog.Actions>
+          </Dialog>
+        </Portal>
       )}
-      <ThemedText type='defaultSemiBold'>Ingresa tu correo para recuperar la contraseña</ThemedText>
-      <View>
-        <Controller
-          control={control}
-          render={({ field }) => (
-            <FormField
-              label="Correo"
-              onChangeText={field.onChange}
-              placeholder="sofia@gmail.com"
-              inputError={errors.email}
-              autoCapitalize="none"
-              {...field}
-            />
-          )}
-          name="email"
-          rules={{ required: "Este campo es requerido" }}
-        />
-      </View>
-      <View>
-        <Button onPress={handleSubmit(onSubmit)} mode="contained-tonal">
-          <ThemedText>Recuperar Contraseña</ThemedText>
-        </Button>
-      </View>
     </View>
   )
 }
